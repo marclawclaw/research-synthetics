@@ -39,9 +39,10 @@ sXMR is a free-floating claim. The protocol provides three things: an oracle ref
        mint    │    burn
                ▼
    ┌────────────────────────┐                   ┌───────────────────┐
-   │  Intent orderbook      │◄─── match ───────►│  Open XMR LPs     │
-   │  (sXMR ↔ XMR quotes)   │                   │  (anonymous, free │
-   │  (LEZ program)         │                   │   to enter/exit)  │
+   │  Intent gossip         │◄─── match ───────►│  Open XMR LPs     │
+   │  (off-chain, via Logos │                   │  (anonymous, free │
+   │  Delivery)             │                   │   to enter/exit)  │
+   │  sXMR ↔ XMR quotes     │                   │                   │
    └───────────┬────────────┘                   └─────────┬─────────┘
                │                                          │
                │      atomic swap (adaptor-sig)           │
@@ -76,6 +77,50 @@ sXMR is a free-floating claim. The protocol provides three things: an oracle ref
 
 ---
 
+## Cross-cutting design challenge: where the orderbook lives, and what can be enforced
+
+Two questions that the rest of this document treats as settled, but are not:
+
+### The orderbook probably should not be on-chain
+
+An on-chain orderbook (whether on the canonical LEZ or anywhere else) is expensive, leaks intent publicly (which undermines the privacy story), and provides no security benefit: the atomic swap is what makes settlement trustless, not the matching layer. A better split:
+
+- **Off-chain matching via Logos Delivery.** LPs broadcast quotes; redeemers broadcast intents; parties pair up bilaterally. Quotes and intents never hit chain state.
+- **On-chain settlement only.** A minimal LEZ program that verifies the atomic-swap primitive (lock, reveal, refund) on the LEZ side. It knows nothing about prices, identities, or who matched with whom.
+
+This also aligns better with Goal 1's privacy proposition: an on-chain orderbook would be a public registry of "everyone trying to acquire real XMR right now."
+
+The same reasoning applies, more strongly, to the second question.
+
+### Atomic-swap execution is hard to enforce
+
+Atomic swaps are deliberately symmetric: either party can refuse the next message at any stage, and both sides refund at timeout. On-chain evidence cannot distinguish:
+
+- An LP maliciously refusing to proceed,
+- An LP whose node went down or lost connectivity,
+- A redeemer never locking their side, making the LP's non-lock correct behaviour,
+- A redeemer locking and then refusing to reveal, blaming the LP.
+
+This is the whole point of an atomic swap: nobody can be forced to complete, and nobody loses funds if they walk away.
+
+Consequently, **a clean "LP defaulted → slash the bond" rule is not enforceable from on-chain state alone.** Any slashing or "punishment" mechanism needs an off-chain attestation of who refused, which means one of:
+
+- A trusted attestor or committee deciding default, which re-introduces centralised trust.
+- A reputation system, which is only useful at scale and cannot enforce against first-time defection.
+- A multi-attestor oracle quorum watching both chains, which adds its own trust assumption and liveness requirement.
+
+Without one of those, the on-chain program can only do one thing: deny future LP slots, queue priority, or fee tiers. It cannot slash collateral with cryptographic certainty.
+
+This is the same architectural reason the orderbook does not benefit from being on-chain: the chain cannot adjudicate participation, only finalise settlement when both parties cooperate.
+
+### Implication for the goals below
+
+- **Goal 1** is unaffected. It never claimed enforceable LP commitments.
+- **Goal 2a (bonded LPs)** is structurally weaker than its description below suggests. The bond cannot be slashed on a simple "LP refused" condition; any real slashing requires a reputation or attestor system layered on top. Read the design as best-effort with a reputation layer, not as cryptographically guaranteed redemption.
+- **Goal 2b (protocol reserve)** is unaffected by the symmetry problem; trust simply lives in the signer set instead.
+
+---
+
 ## Goal 2: Always real XMR at oracle price
 
 ### Premise
@@ -87,6 +132,8 @@ Two sub-designs, each restoring some trust that Goal 1 deliberately avoided.
 ### Sub-design 2a: Bonded LP set
 
 LPs join a registered set. Each LP posts stable collateral on LEZ equal to (or some multiple of) their XMR commitment. When a redemption request is routed to an LP, they must complete the atomic swap within a window. If they default, their bond is slashed and paid to the redeemer. LPs may leave the set, but only after a notice period that exceeds the redemption SLA.
+
+**Enforceability caveat (see the cross-cutting section above):** "LP defaulted" is not a verdict an on-chain program can render from atomic-swap state alone. Any slashing rule needs an off-chain attestor or a reputation system to attribute fault. Without one, the bond can be used to gate participation (priority, fee tiers, future-slot access) but not slashed with cryptographic certainty on a single failed swap.
 
 ```
                           ┌─────────────────────────┐
