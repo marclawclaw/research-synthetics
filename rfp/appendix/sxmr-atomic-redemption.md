@@ -7,9 +7,9 @@ related: [patterns/synthetic-collateral-models, patterns/oracle-pricing-model, p
 
 ## The pitch
 
-A synthetic Monero token (sXMR) deployed as an LEZ program. Oracle-priced for trading and composability inside the Logos Execution Zone; redeemed to real XMR via peer-to-peer atomic swap with no custodian, no bridge, and no protocol-held reserves.
+A synthetic Monero token (sXMR) deployed as a program on the canonical Logos Execution Zone (LEZ). Oracle-priced for trading and composability inside LEZ; redeemed to real XMR via peer-to-peer atomic swap with no custodian, no bridge, and no protocol-held reserves.
 
-The choice of LEZ (rather than a dedicated zone) gives sXMR direct composability with every other LEZ program: lending markets can accept sXMR as collateral, DEXes can list it, and the protocol inherits LEZ consensus security with no separate validator set. See [[rfp/appendix/lez-vs-dedicated-zone]] for the LEZ vs dedicated-zone trade-off.
+Deploying on the canonical LEZ (rather than spinning up a separate, sXMR-specific zone) gives sXMR direct composability with every other LEZ program: lending markets can accept sXMR as collateral, DEXes can list it, and the protocol inherits canonical-LEZ consensus security with no separate validator set. See [[rfp/appendix/lez-vs-dedicated-zone]] for the canonical-LEZ vs separate-zone trade-off.
 
 **The wedge:** the only synthetic that terminates in a privacy-preserving asset on a privacy chain. sBTC redeems to public BTC. Every other synthetic redeems to traceable stablecoins. sXMR is the first design where the redemption path itself preserves privacy.
 
