@@ -1,13 +1,15 @@
 ---
-tags: [appendix, synthetic, monero, atomic-swap, pitch]
-related: [patterns/synthetic-collateral-models, patterns/oracle-pricing-model, projects/sbtc-stacks]
+tags: [appendix, synthetic, monero, atomic-swap, pitch, lez]
+related: [patterns/synthetic-collateral-models, patterns/oracle-pricing-model, projects/sbtc-stacks, rfp/appendix/lez-vs-dedicated-zone]
 ---
 
 # sXMR: Oracle-priced Synthetic with Atomic-Swap Redemption
 
 ## The pitch
 
-A synthetic Monero token (sXMR) on EVM. Oracle-priced for trading and composability; redeemed to real XMR via peer-to-peer atomic swap with no custodian, no bridge, and no protocol-held reserves.
+A synthetic Monero token (sXMR) deployed as an LEZ program. Oracle-priced for trading and composability inside the Logos Execution Zone; redeemed to real XMR via peer-to-peer atomic swap with no custodian, no bridge, and no protocol-held reserves.
+
+The choice of LEZ (rather than a dedicated zone) gives sXMR direct composability with every other LEZ program: lending markets can accept sXMR as collateral, DEXes can list it, and the protocol inherits LEZ consensus security with no separate validator set. See [[rfp/appendix/lez-vs-dedicated-zone]] for the LEZ vs dedicated-zone trade-off.
 
 **The wedge:** the only synthetic that terminates in a privacy-preserving asset on a privacy chain. sBTC redeems to public BTC. Every other synthetic redeems to traceable stablecoins. sXMR is the first design where the redemption path itself preserves privacy.
 
@@ -16,7 +18,7 @@ A synthetic Monero token (sXMR) on EVM. Oracle-priced for trading and composabil
 The RFP must pick one of two goals before specifying further. They are incompatible:
 
 1. **Non-custodial, mostly-works:** pure atomic-swap design ships. Soft peg, market-dependent exit. The interesting product.
-2. **Always real XMR at oracle price:** requires bonded LPs (slashable USDC collateral) or a protocol XMR reserve. Custody or solvency risk returns. The marketable product.
+2. **Always real XMR at oracle price:** requires bonded LPs (slashable stable collateral on LEZ) or a protocol XMR reserve. Custody or solvency risk returns. The marketable product.
 
 ---
 
@@ -24,29 +26,29 @@ The RFP must pick one of two goals before specifying further. They are incompati
 
 ### Premise
 
-sXMR is a free-floating claim. The protocol provides three things: an oracle reference price, an ERC-20 token that represents synthetic XMR exposure, and a matching venue where sXMR holders and XMR holders discover each other and execute atomic swaps. The protocol holds no XMR, runs no signer set, and offers no redemption SLA.
+sXMR is a free-floating claim. The protocol provides three things: an oracle reference price, a Token (issued by the LEZ program) that represents synthetic XMR exposure, and a matching venue where sXMR holders and XMR holders discover each other and execute atomic swaps. The protocol holds no XMR, runs no signer set, and offers no redemption SLA.
 
 ### Architecture
 
 ```
-   ┌───────────────────────┐  oracle (XMR/USD)  ┌───────────────────┐
-   │  sXMR core            │◄───────────────────│  Oracle           │
-   │  (ERC-20 + USDC vault)│                    │  Chainlink / Pyth │
-   └───────────┬───────────┘                    └───────────────────┘
+   ┌────────────────────────┐  oracle (XMR/USD)  ┌───────────────────┐
+   │  sXMR LEZ program      │◄───────────────────│  Oracle program   │
+   │  (Token + stable vault)│                    │  on LEZ           │
+   └───────────┬────────────┘                    └───────────────────┘
                │
        mint    │    burn
                ▼
    ┌────────────────────────┐                   ┌───────────────────┐
    │  Intent orderbook      │◄─── match ───────►│  Open XMR LPs     │
    │  (sXMR ↔ XMR quotes)   │                   │  (anonymous, free │
-   │                        │                   │   to enter/exit)  │
+   │  (LEZ program)         │                   │   to enter/exit)  │
    └───────────┬────────────┘                   └─────────┬─────────┘
                │                                          │
                │      atomic swap (adaptor-sig)           │
-               │      EVM ◄────────────────────► Monero L1│
+               │      LEZ (LEE) ◄──────────────► Monero L1│
                ▼                                          ▼
        sXMR holder gets XMR                  XMR LP gets sXMR,
-       on Monero L1                          burns for USDC
+       on Monero L1                          burns for stable
 ```
 
 ### Properties
@@ -54,7 +56,7 @@ sXMR is a free-floating claim. The protocol provides three things: an oracle ref
 - **Non-custodial.** No vault holds XMR. No signer set. No bridge.
 - **Soft peg.** Oracle is a reference; achievable redemption price is whatever an LP quotes. Spread widens under stress without bound.
 - **No redemption guarantee.** Counterparty may not exist when you want to exit.
-- **Composable on EVM.** sXMR is a vanilla ERC-20 in DeFi while held.
+- **Composable on LEZ.** sXMR is a vanilla Token, callable by any other LEZ program (lending, DEX, governance).
 - **Private exit.** Successful redemption deposits real XMR on Monero L1, severing the public trail.
 - **Open LP set.** Anyone with XMR can quote, no permission required.
 - **Regulatory minimalism.** Protocol does not handle XMR; arguably just a price feed plus a matching board.
@@ -84,11 +86,11 @@ Two sub-designs, each restoring some trust that Goal 1 deliberately avoided.
 
 ### Sub-design 2a: Bonded LP set
 
-LPs join a registered set. Each LP posts USDC collateral on EVM equal to (or some multiple of) their XMR commitment. When a redemption request is routed to an LP, they must complete the atomic swap within a window. If they default, their USDC bond is slashed and paid to the redeemer. LPs may leave the set, but only after a notice period that exceeds the redemption SLA.
+LPs join a registered set. Each LP posts stable collateral on LEZ equal to (or some multiple of) their XMR commitment. When a redemption request is routed to an LP, they must complete the atomic swap within a window. If they default, their bond is slashed and paid to the redeemer. LPs may leave the set, but only after a notice period that exceeds the redemption SLA.
 
 ```
                           ┌─────────────────────────┐
-                          │  sXMR core              │
+                          │  sXMR LEZ program       │
                           │  + LP registry          │
                           │  + slashing logic       │
                           └────┬──────────┬─────────┘
@@ -98,12 +100,12 @@ LPs join a registered set. Each LP posts USDC collateral on EVM equal to (or som
               ▼                                              ▼
    ┌─────────────────────┐                        ┌─────────────────────┐
    │  sXMR holder        │                        │  Bonded LP          │
-   │  burns sXMR,        │       atomic swap      │  posts USDC bond,   │
+   │  burns sXMR,        │       atomic swap      │  posts stable bond, │
    │  receives XMR       │◄──────────────────────►│  delivers XMR or    │
    │                     │   (adaptor-sig, SLA)   │  forfeits bond      │
    └─────────────────────┘                        └─────────────────────┘
               ▲                                              ▲
-              │ if LP defaults: USDC bond is paid out as     │
+              │ if LP defaults: bond is paid out as          │
               └─ compensation, oracle attests non-delivery ──┘
 ```
 
@@ -113,13 +115,14 @@ The protocol accumulates an XMR reserve from mint fees, a yield programme, or a 
 
 ```
                           ┌─────────────────────────┐
-                          │  sXMR core              │
+                          │  sXMR LEZ program       │
                           │  + reserve accounting   │
                           └───────────┬─────────────┘
                                       │
                        burn sXMR      ▼     trigger swap
                                   ┌───────────────┐
                                   │ Reserve module│
+                                  │ (LEZ program) │
                                   └───────┬───────┘
                                           │
                        atomic swap        ▼
@@ -139,7 +142,7 @@ At this point the design has reinvented [[projects/sbtc-stacks]] with an oracle 
 | Redemption guarantee | Up to total bonded capacity | Up to reserve size |
 | Slashing surface | Yes (bond slashed on default) | No (reserve is the slashing) |
 | Oracle role | Pricing + default attestation | Pricing only |
-| LP economics | Yield from spreads + protocol incentives, less bond opportunity cost | N/A (no third-party LPs) |
+| LP economics | Yield from spreads plus protocol incentives, less bond opportunity cost | N/A (no third-party LPs) |
 | Decentralisation | High (anyone can be a bonded LP if they post the bond) | Low (signer set is gated) |
 | Censorship resistance | Medium (LP set is registered) | Low (signers are known) |
 | Best-case redemption speed | Atomic swap (30 to 60 min) | Atomic swap (30 to 60 min) |
@@ -153,7 +156,7 @@ At this point the design has reinvented [[projects/sbtc-stacks]] with an oracle 
 
 ### Failure modes
 
-- **Bonded LPs (2a):** coordinated default exceeds bonded capacity; slashing oracle for default attestation is itself a trusted component; bond opportunity cost limits LP supply.
+- **Bonded LPs (2a):** coordinated default exceeds bonded capacity; the slashing oracle for default attestation is itself a trusted component; bond opportunity cost limits LP supply.
 - **Protocol reserve (2b):** signer set is a target; if reserve is undercollateralised, peg breaks; effectively recreates [[projects/sbtc-stacks]] custody risk.
 
 ---
@@ -199,7 +202,7 @@ Before committing to either goal:
 
 1. **Atomic swap UX with Monero today.** Live protocols (unstoppableswap, COMIT) take 30 to 60 minutes and require both parties online. Confirm async / intent-based variants are production-grade before designing UX around them.
 2. **LP supply.** Will XMR holders actually LP? They self-select for privacy maximalism and may not want a public on-chain LP role. The LP side is the bottleneck; validate before designing the rest.
-3. **Bond economics (Goal 2a only).** Required bond size as a multiple of XMR notional; opportunity cost of locked USDC; expected APY needed to attract bonded LPs.
+3. **Bond economics (Goal 2a only).** Required bond size as a multiple of XMR notional; opportunity cost of locked stable collateral on LEZ; expected APY needed to attract bonded LPs.
 4. **Signer set sourcing (Goal 2b only).** Same problem space as [[projects/sbtc-stacks]]; revisit that project's trust assumptions before reinventing them.
 5. **Regulatory.** A synthetic that terminates in a privacy coin will draw scrutiny under any of the three designs. Goal 1 has the cleanest defence (protocol is a price feed and a matching board); Goal 2b has the weakest (protocol custodies XMR).
 
