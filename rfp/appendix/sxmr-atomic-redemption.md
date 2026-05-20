@@ -103,7 +103,17 @@ Atomic swaps are deliberately symmetric: either party can refuse the next messag
 
 This is the whole point of an atomic swap: nobody can be forced to complete, and nobody loses funds if they walk away.
 
-Consequently, **a clean "LP defaulted → slash the bond" rule is not enforceable from on-chain state alone.** Any slashing or "punishment" mechanism needs an off-chain attestation of who refused, which means one of:
+**Critically, this means an atomic swap behaves like a free option for whichever party acts next.** Stage by stage:
+
+1. **Alice (redeemer) locks sXMR on LEZ.** Bob (LP) now holds a free option: if the XMR price has moved in his favour since the quote, he locks his XMR and the swap proceeds; if it has moved against him, he simply does not lock. Alice's sXMR refunds at timeout. Bob has paid only the cost of waiting and gained the optionality of letting an adverse swap expire.
+2. **Bob (LP) locks XMR on Monero.** Alice now holds the same free option in reverse. If the price has moved in her favour, she completes the swap by revealing the secret; if it has moved against her, she does not reveal. Both sides refund. Alice has paid only fees.
+3. **Secret reveal.** Once the secret is revealed by either side, the swap completes; this is the only stage where the protocol is no longer optional.
+
+So at every stage *before* completion, the next party to act has a no-cost-beyond-fees option to abandon the swap based on price movement during the lock window. **The "swap" is in effect a short-dated American option that either party can let expire.**
+
+This is well-known in the atomic-swap literature (sometimes called the "free option problem"). It is not a bug in any particular implementation; it is the cost of atomicity itself. Mitigations exist (very short timeouts, requiring fee bonds posted before the swap, premium-paying initiators), but none restore symmetric enforceability without re-introducing trust.
+
+Consequently, **a clean "LP defaulted → slash the bond" rule is not enforceable from on-chain state alone.** Refusing to proceed is *valid behaviour* under the protocol, not a default. Any slashing or "punishment" mechanism needs an off-chain attestation of who refused, which means one of:
 
 - A trusted attestor or committee deciding default, which re-introduces centralised trust.
 - A reputation system, which is only useful at scale and cannot enforce against first-time defection.
