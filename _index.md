@@ -75,3 +75,4 @@ Related: [[projects/monero-zcash-synthetics-community-history]] (ecosystem histo
 - [[patterns/cdp-synthetics-landscape]]
 - [[patterns/cdp-vs-morpho-trust]]
 - [[patterns/collateral-debt-units]]
+- [[rfp/appendix/cdp-isolation]]
