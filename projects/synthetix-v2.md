@@ -92,6 +92,30 @@ The borrower (staker) side has no interest rate. The borrower cost is (a) the fo
 | SNX inflation reward | 1.44M SNX per week at launch; 2.5% terminal from September 2023; ended by SIP-2043 (December 2023) | 2019 to 2023 | [SIP-23/24 search results](https://sips.synthetix.io/sips/sip-24); [The Block](https://www.theblock.co/news/defi/2023-12-12-synthetix-snx-token-inflation-buybacks-burns-267138) (search result summary, not re-fetched) |
 | Revenue per year to stakers (fees) | See adoption table: $25.3M (2022), $33.8M (2023), $20.4M (2024), $1.75M (2025) | 2026-11-16 | [DefiLlama fees](https://api.llama.fi/summary/fees/synthetix-v1+v2) |
 
+## Admin control: who can change the rules (read on chain 2026-11-16)
+
+Verified by `eth_call` and `eth_getStorageAt` against Ethereum mainnet through `ethereum-rpc.publicnode.com` (selectors computed locally; reproducible by anyone with an RPC endpoint).
+
+| Check | Result |
+|-------|--------|
+| `owner()` of the SNX proxy (`0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F`) | `0xEb3107117FEAd7de89Cd14D463D340A2E6917769` |
+| `owner()` of AddressResolver (`0x823bE81bbF96BEc0e25CA13170F5AaCb5B79ba83`) | same address |
+| `owner()` of Issuer, ExchangeRates, SystemSettings, SystemStatus, Exchanger, CollateralManager, DebtCache, FeePool (resolved through the AddressResolver) | same address for all eight |
+| Owner contract type | Safe (Gnosis Safe) v1.3.0 proxy; singleton `0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552` |
+| Safe threshold and signers | 4 of 7; nonce 3,370 (actively used) |
+| Safe guard and modules | none set (guard storage slot zero; module list empty) |
+| `nominatedOwner()` on SNX proxy and AddressResolver | zero address (no pending transfer) |
+| Upgrade functions present in bytecode | `setTarget(address)` on the proxy (repoints the implementation); `importAddresses(bytes32[],address[])` on the AddressResolver (repoints which contract every other contract resolves) |
+
+What this establishes: one 4-of-7 multisig owns the whole V2 contract set, and there is no on-chain timelock, guard or module between a signed Safe transaction and a change of implementation or of the resolver map. The protocol is governed, with an admin-key trust model on the Aave end of the spectrum, not the Morpho end.
+
+What it does not establish:
+- **Signer identities** are not established (seven addresses, unlabelled here).
+- **Function-level permissions** were not checked beyond the presence of `setTarget` and `importAddresses` in bytecode. That the `Owned` pattern gates them to the owner is from Synthetix's contract design, not read from source in this session.
+- **Voting layer:** per Synthetix's SIP text (SIP-124, SIP-172, SIP-401, read through a page summariser, not the contract source), stakers elect the Spartan Council, which votes on SIPs and SCCPs; execution is by multisig. I found no on-chain mechanism binding the multisig to a vote result, so the link from stakers to contract changes rests on the signers following the vote. Treat as unverified.
+- **Documentation conflicts:** [SIP-124](https://sips.synthetix.io/sips/sip-124) (status Implemented) describes a protocolDAO threshold of at least five signatures with membership expected to reach nine, members bonded with 10k SNX and validated by the Spartan Council; the chain shows 4 of 7. A search-result summary of the Synthetix developer docs names this address as the pDAO Gnosis multisig, but I could not open that page (HTTP 404), and an older Synthetix post is summarised as 4 of 8. Either the configuration changed or the SIPs lag.
+- **Unexecuted handover:** a search summary of SIP-172 says SystemSettings ownership would move from this address to a Spartan Council multisig. The chain shows SystemSettings still owned by this Safe, so that handover is not reflected on chain; I could not read the SIP-172 text itself ([SIP-172 page](https://sips.synthetix.io/sips/sip-172) rendered different content). [SIP-401](https://sips.synthetix.io/sips/sip-401) (a Risk Council replacing the pDAO) is marked rejected (abandoned).
+
 ## Sources
 
 - [DefiLlama Synthetix v1+v2 API](https://api.llama.fi/protocol/synthetix-v1+v2) : accessed 2026-11-16

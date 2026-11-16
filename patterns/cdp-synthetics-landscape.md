@@ -147,6 +147,19 @@ Status: Closed (sourced numbers found), Partial (some found), Open ([NOT FOUND])
 | Alchemix | Closed | V2 10% fee on yield; V3 0.25% (0.10% Base) redemption fee, 5% to 17.5% yield fee, 1% (2.5% Arbitrum) early transmutation fee, 1.5% liquidator fee | V3 liquidation threshold defaults | [V3 FAQ](https://alchemix-v3-docs.vercel.app/user/faq) |
 | Liquity | Closed | V1 0.5% to 5% one-off fee; V2 upfront fee 7 days of interest; 75% of interest to Stability Pool; redemption fee formulas | V2 current average rate | [Liquity docs](https://docs.liquity.org/v2-faq/bold-and-earn.md) |
 
+## 4a. Axis 3 comparison: who can change the core contracts (on-chain reads, 2026-11-16)
+
+"Permissionless" splits into who can use a protocol, who can add collateral or markets, and who can change the rules. This table covers the third axis for the three protocols checked directly. Method: `eth_call` against `ethereum-rpc.publicnode.com`; Synthetix detail in [[projects/synthetix-v2]].
+
+| Protocol | Who can change core logic | On-chain delay | Evidence read |
+|----------|--------------------------|----------------|---------------|
+| Synthetix V2 | One Safe v1.3.0, 4 of 7 signers, owns SNX proxy, AddressResolver and all eight resolver contracts checked | none (no guard, no modules) | `owner()`, Safe `getThreshold()`, guard slot, `getModulesPaginated` |
+| Sky/Maker | Vat `wards(PauseProxy 0xBE8E3e36...98FB)` is 1; PauseProxy is owned by the DSPause `0xbE286431...38f3`, whose own owner is the zero address | 172,800 s (48 hours) `delay()` on the pause | `wards`, `owner()`, `delay()`. The voting layer that schedules spells into the pause was not checked |
+| Liquity V1 | `owner()` of TroveManager and BorrowerOperations is the zero address (renounced); LUSDToken exposes no `owner()` | not applicable | `owner()` |
+| Liquity V2, Frankencoin, crvUSD, Alchemix, Youves and the rest | Not checked on chain. Liquity V2 is documented as immutable ([FAQ](https://docs.liquity.org/v2-faq/general.md)) | not checked | docs only |
+
+Reading: the "Aave versus Morpho" spectrum holds on this axis for the CDP family. Liquity V1 has no admin at all; Sky/Maker has an admin but forces a 48 hour public delay; Synthetix V2 had a 4-of-7 key that could change anything immediately.
+
 ## 5. Source conflicts
 
 | Ref | Conflict | Values | Resolution used |
