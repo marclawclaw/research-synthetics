@@ -156,9 +156,40 @@ Status: Closed (sourced numbers found), Partial (some found), Open ([NOT FOUND])
 | Synthetix V2 | One Safe v1.3.0, 4 of 7 signers, owns SNX proxy, AddressResolver and all eight resolver contracts checked | none (no guard, no modules) | `owner()`, Safe `getThreshold()`, guard slot, `getModulesPaginated` |
 | Sky/Maker | Vat `wards(PauseProxy 0xBE8E3e36...98FB)` is 1; PauseProxy is owned by the DSPause `0xbE286431...38f3`, whose own owner is the zero address | 172,800 s (48 hours) `delay()` on the pause | `wards`, `owner()`, `delay()`. The voting layer that schedules spells into the pause was not checked |
 | Liquity V1 | `owner()` of TroveManager and BorrowerOperations is the zero address (renounced); LUSDToken exposes no `owner()` | not applicable | `owner()` |
-| Liquity V2, Frankencoin, crvUSD, Alchemix, Youves and the rest | Not checked on chain. Liquity V2 is documented as immutable ([FAQ](https://docs.liquity.org/v2-faq/general.md)) | not checked | docs only |
+| Frankencoin (ZCHF) | No `owner()` or `admin()` getter and no EIP-1967 proxy slot on ZCHF (`0xB58E61C3098d85632Df34EecfB899A1Ed80921cB`), on the reserve token FPS (`0x1bA26788dfDe592fec8bcB0Eaff472a42BE341B2`) or on the governance wrapper FCS (`0xdb861830d9ae2d1fcf99fa0cfd3973de382b0b5b`). Rule changes go through share-holder veto, not an admin key | veto windows only: ZCHF `MIN_APPLICATION_PERIOD()` = 1,209,600 s (14 days), `MIN_FEE()` = 1,000 ZCHF | `owner()`, `admin()`, storage slots, constants. Detail and caveats in section 4b |
+| crvUSD | Factory `0xC9332fdCB1c491Dcc683baE86Fe3cb70360738BC` (the token's `minter()`); its `admin()` is a 22-function proxy contract (`0xeda0...80d1`) whose `dao()` is the Curve DAO Aragon Agent (`0x4090...9968`). Curve DAO voting is the root | Aragon voting: `voteTime()` = 604,800 s (7 days); support 51%; quorum 30%. No separate timelock found in the admin path | `minter()`, `admin()`, `dao()`, `voteTime()`, `supportRequiredPct()`, `minAcceptQuorumPct()`. Detail and caveats in section 4b |
+| Alchemix, Youves and the rest | Not checked on chain. Liquity V2 is documented as immutable ([FAQ](https://docs.liquity.org/v2-faq/general.md)) | not checked | docs only |
 
 Reading: the "Aave versus Morpho" spectrum holds on this axis for the CDP family. Liquity V1 has no admin at all; Sky/Maker has an admin but forces a 48 hour public delay; Synthetix V2 had a 4-of-7 key that could change anything immediately.
+
+## 4b. Frankencoin and crvUSD: axis 2 and axis 3 detail (read 2026-11-16)
+
+Method as in 4a (`eth_call` and `eth_getStorageAt` through `ethereum-rpc.publicnode.com`; `eth_getLogs` over wide ranges was refused by the endpoint, so event history was not scanned). Governance rules below are from each project's documentation unless marked "chain".
+
+**Frankencoin (ZCHF), Ethereum.**
+- Axis 3 (chain): ZCHF, FPS and FCS expose no `owner()` or `admin()` getter and have no EIP-1967 implementation or admin slot. Absence of a getter is not proof that no privileged role exists: I did not decompile bytecode or read source, and the ChainSecurity audit scope lists an `Ownable.sol`, which I could not place (most plausibly per-position ownership; unverified).
+- Axis 2 (docs): anyone can propose a new position with the collateral token, liquidation price, risk premium over the global rate, term and limits; the fee is 1,000 ZCHF (not refunded after a veto) and the initialisation period is at least three days, during which a qualified holder can veto. Minters are added by `suggestMinter`, which any address may call, subject to the same veto. Current docs set the veto threshold at more than 1% of time-weighted voting power ("exactly 1% is not enough"); older secondary sources and the MiCA classification PDF say 2%.
+- Trust shifts from an admin key to token holders: the veto is plutocratic and time-weighted, with `attack()` letting a holder destroy another holder's votes, and delegation is transitive. The audit's trust model "assumes no malicious majority of internal FCS votes after binding", and the docs say FCS governance "can become usable before the wrapper is binding" (what binding requires is not explained).
+- Docs and chain disagree: docs describe `MinterGovernance.suggestMinter` with a 60 day application period and 1,200 ZCHF fee; the ZCHF contract at the documented address returns `MIN_APPLICATION_PERIOD()` = 14 days and `MIN_FEE()` = 1,000 ZCHF. Possibly the docs describe a newer module on the FCS side; unresolved. The docs also list no MintingHub or PositionFactory address, so I did not read those contracts or the minter set.
+- Cross-chain: the docs mention "CCIPAdmin rules" for cross-chain configuration without describing them, so a cross-chain admin role may exist.
+- ZCHF is pegged to CHF and carries no oracle price for liquidation (liquidation price is proposer-set; challenges are oracle-free per docs), so the oracle risk that hit Ostium, Metronome and Mirror is structurally absent; the cost is that collateral selection is entirely a share-holder veto problem.
+
+**crvUSD, Ethereum.**
+- Axis 3 (chain): `crvUSD.minter()` is the ControllerFactory. `factory.admin()` is a 22-function contract (identified selectors: `dao()`, `set_monetary_policy(address,address)`, `set_callback(address,address)`; the other 19 not identified) whose `dao()` returns the Curve DAO Aragon Agent. Curve DAO voting runs for 7 days with 51% support and 30% quorum. The nine market controllers read (sfrxETH, wstETH and LBTC checked individually) have no EIP-1967 proxy slot, but each points to a swappable `monetary_policy()` contract, and the admin path has a `set_monetary_policy` function, so the DAO can change the interest-rate logic of existing markets (function-level access control not read).
+- Axis 2 (docs and chain): nine collaterals; markets are added through the DAO-controlled factory, not by users (I did not confirm the access control on `add_market` from source). This is the Aave end of axis 2, in contrast to Frankencoin.
+- Not checked: the Curve DAO's token distribution and voting concentration (veCRV), the Aragon Agent's own upgradeability beyond noting it is a kernel-managed Aragon app proxy, and whether any off-chain guardian can pause crvUSD minting (the Curve Emergency DAO exists but I did not tie it to crvUSD).
+
+**Reading across the three axes.**
+
+| | Who can use it | Who can add collateral or markets | Who can change the rules |
+|---|---|---|---|
+| Synthetix V2 | anyone | governance, via a 4-of-7 key | the same 4-of-7 Safe, no delay |
+| crvUSD | anyone | Curve DAO vote (7 days) | Curve DAO vote (7 days) |
+| Sky/Maker | anyone | governance (executive votes) through a 48 hour pause | same |
+| Liquity V1 | anyone | fixed at deployment; no one | no one (renounced) |
+| Frankencoin | anyone | anyone proposes; token holders veto | token-holder veto; no admin getter found |
+
+Frankencoin is the only surveyed design that is permissionless on axis 2 and keyless on axis 3 as far as these reads go, which makes it the closest Morpho-like analogue in the CDP family. The caveats above (docs and chain disagree; veto power concentrates with long-term share holders; the minter set and position contracts were not read) are what separate "closest analogue" from "verified permissionless".
 
 ## 5. Source conflicts
 
