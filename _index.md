@@ -38,7 +38,7 @@ Ranked by current relevance and size as of 2026-11-16 where refreshed. Prior May
 
 The twenty selected protocols cover the design space:
 
-- **Debt-pool and CDP synthetics:** [[projects/synthetix-v2]], [[projects/synthetix-v3]], [[projects/sky-maker]], [[projects/liquity]], [[projects/alchemix]], [[projects/metronome-synth]], [[projects/youves]], [[projects/mirror-protocol]] (historical). Comparison in [[patterns/cdp-synthetics-landscape]].
+- **Debt-pool and CDP synthetics:** [[projects/synthetix-v2]], [[projects/synthetix-v3]], [[projects/sky-maker]], [[projects/liquity]], [[projects/alchemix]], [[projects/metronome-synth]], [[projects/youves]], [[projects/mirror-protocol]] (historical), [[projects/frankencoin]], [[projects/crvusd]]. Comparison in [[patterns/cdp-synthetics-landscape]].
 - **Collateral-split and delta-neutral synthetic dollars:** [[projects/hylo]], [[projects/ethena-usde]]
 - **Liquidity-pool perps (LP as counterparty):** [[projects/gmx-v2]], [[projects/jupiter-perps]]
 - **CLOB / orderbook:** [[projects/hyperliquid]], [[projects/dydx-v4]], [[projects/lighter]], [[projects/variational]]
@@ -74,3 +74,4 @@ Related: [[projects/monero-zcash-synthetics-community-history]] (ecosystem histo
 - [[patterns/synthetic-collateral-models]]
 - [[patterns/cdp-synthetics-landscape]]
 - [[patterns/cdp-vs-morpho-trust]]
+- [[patterns/collateral-debt-units]]
