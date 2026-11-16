@@ -73,3 +73,4 @@ Related: [[projects/monero-zcash-synthetics-community-history]] (ecosystem histo
 - [[patterns/bridge-trust-assumptions]]
 - [[patterns/synthetic-collateral-models]]
 - [[patterns/cdp-synthetics-landscape]]
+- [[patterns/cdp-vs-morpho-trust]]
