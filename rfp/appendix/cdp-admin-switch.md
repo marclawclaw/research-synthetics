@@ -43,6 +43,14 @@ Whatever oracle is chosen brings its own admin, whatever mode the roles are in: 
 - Whether Risk changes apply to open positions or only new ones.
 - Whether to ship a reference Program gated controller or only define the interface.
 
+## Logos RFPs this builds on
+
+Read from `logos-co/rfp` at `920fad9` (2026-11-06).
+
+- [RFP-001 Admin Authority Library](https://github.com/logos-co/rfp/blob/master/RFPs/RFP-001-admin-authority-lib.md): admin authority set at initialisation, can transfer or revoke (renounce), gates privileged instructions; "There can only be one admin authority (signer) at a time"; a deployed PDA as authority is a soft requirement. Gaps: one authority per program rather than per role; transfer is one step.
+- [RFP-002 Freeze Authority Library](https://github.com/logos-co/rfp/blob/master/RFPs/RFP-002-freeze-authority-lib.md): freeze authority set at initialisation and changed or revoked by the admin authority; can freeze the program ("rejecting any attempt to interact with it") or a single `AccountId`. Both conflict with the Guardian limits and rule 4 (a full freeze blocks repay and liquidation; an account freeze can block one borrower from repaying).
+- [RFP-020 RedStone Off-Chain Oracle Adaptor](https://github.com/logos-co/rfp/blob/master/RFPs/RFP-020-redstone-oracle-adaptor.md) (assumed delivered by 0.4): push aggregator writing an RFP-019 price account (the only read path for private execution) and public-mode pull; M of N signers (default 3 of N); per-feed `maxAge`; feeds and signer sets managed by an RFP-001 admin authority, which is an upstream admin the CDP inherits.
+
 ## What LEZ provides
 
 Read from `logos-blockchain/logos-execution-zone`, branch `dev`, commit `cb075d5` (2026-11-13).
