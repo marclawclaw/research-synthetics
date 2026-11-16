@@ -15,10 +15,10 @@ In oracle-priced perp venues, traders trade against a liquidity pool (or staker 
 
 ## Implementations
 
-- **[[projects/synthetix-v3]]:** SNX stakers + multi-collateral pools back per-market debt. When trader PnL is positive, stakers' aggregate debt grows. V3 lets stakers choose which pools they back to limit exposure.
+- **[[projects/synthetix-v3]] (retired June 2026; see [[projects/synthetix-v2]] for the debt-pool precedent):** SNX stakers + multi-collateral pools back per-market debt. When trader PnL is positive, stakers' aggregate debt grows. V3 lets stakers choose which pools they back to limit exposure.
 - **[[projects/gmx-v2]]:** GM pools (single-market) and GLV vaults (multi-market). LPs deposit basket assets; pool absorbs trader PnL. GLV improves capital efficiency by dynamic allocation.
-- **[[projects/jupiter-perps]]:** JLP pool (SOL + ETH + wBTC + USDC + USDT). LPs hold a multi-asset index that takes the inverse of net trader positioning. Gets 75% of platform fees.
-- **[[projects/ostium]]:** Single USDC OLP vault is the sole counterparty for all markets (crypto and RWA). Concentrated risk but simple accounting.
+- **[[projects/jupiter-perps]]:** JLP pool (SOL + ETH + wBTC + USDC; JupUSD added June 2026 and USDT is now at zero). Jupiter's GUM markets (beta 2026-09-22) use an orderbook with no JLP pool. LPs hold a multi-asset index that takes the inverse of net trader positioning. Gets 75% of platform fees.
+- **[[projects/ostium]]:** a single USDC OLP vault backed all markets (crypto and RWA); since 2026-04-28 directional flow is hedged offchain with Jump and prime brokers and the OLP is an intraday buffer. On 2026-07-15 the vault lost $23.75M to the oracle-path exploit, the concentrated-risk failure mode in practice; affected LPs retained about 30% of OLP value after Phase One compensation.
 
 ## Failure modes
 

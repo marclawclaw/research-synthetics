@@ -10,6 +10,9 @@ Synthetic assets are on-chain instruments that derive their value from an extern
 - Perpetuals platforms producing synthetic exposure (GMX, dYdX, Drift, Jupiter Perps, Hyperliquid)
 - BTC-backed synthetics on Bitcoin L2s (sBTC on Stacks, Babylon-related)
 - Cross-chain synthetic representations of ETH, BTC and SOL
+- CDP, debt-pool, collateral-split and delta-neutral synthetic dollars and assets (Sky, Liquity, Alchemix, Hylo, Ethena and others; see `patterns/cdp-synthetics-landscape.md`)
+
+Last refreshed: Ethereum, Solana and CDP coverage 2026-11-16; Hyperliquid, dYdX and sBTC May 2026.
 
 ## Structure
 

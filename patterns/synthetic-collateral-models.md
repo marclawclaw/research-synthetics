@@ -1,11 +1,11 @@
 ---
 tags: [pattern, collateral, design]
-seen_in: [synthetix-v3, gmx-v2, jupiter-perps, sbtc-stacks, ostium]
+seen_in: [synthetix-v2, synthetix-v3, gmx-v2, jupiter-perps, sbtc-stacks, ostium, sky-maker, liquity, hylo, ethena-usde]
 ---
 
 # Synthetic Collateral Models
 
-Synthetic assets need backing. The choice of collateral model defines the protocol's economic security, capital efficiency and trust assumptions. Across the eight projects researched, five distinct models emerge.
+Synthetic assets need backing. The choice of collateral model defines the protocol's economic security, capital efficiency and trust assumptions. Across the eight projects researched in May 2026, five distinct models emerge; the November 2026 update adds three more (see the end of this list).
 
 ## Models observed
 
@@ -15,7 +15,8 @@ Synthetic assets need backing. The choice of collateral model defines the protoc
 - Issuance: stakers mint Synths against their SNX.
 - Pros: pure on-chain, no external custody.
 - Cons: reflexive (SNX price down → C-ratio down → forced unwinds), capital-inefficient.
-- Status in 2026: legacy. V3 moves away from SNX-only.
+- Status in 2026: retired. Solo SNX staking ended April 2025. See [[projects/synthetix-v2]].
+- Note: sUSD is the exchange and settlement unit, not collateral; synths are backed by the shared debt pool of staked SNX.
 
 ### 2. Multi-collateral CDP (Synthetix V3)
 
@@ -23,6 +24,7 @@ Synthetic assets need backing. The choice of collateral model defines the protoc
 - Issuance: synthetic markets draw credit from the pool.
 - Pros: more capital-efficient, less reflexive than native CDP. Stakers can pick risk.
 - Cons: still complex; LPs absorb aggregate trader PnL.
+- Status in 2026: effectively retired (TVL $0 from 2026-06-26; the 420 Pool closed 2026-06-19).
 - See: [[projects/synthetix-v3]].
 
 ### 3. LP-pool counterparty (GMX, Jupiter, Ostium)
@@ -48,6 +50,10 @@ Synthetic assets need backing. The choice of collateral model defines the protoc
 - Pros: no LP counterparty, no synthetic-asset peg to maintain.
 - Cons: requires deep liquidity (market makers) to function; the orderbook is the product.
 - See: [[projects/hyperliquid]], [[projects/dydx-v4]].
+
+### Beyond the original five
+
+The November 2026 update added further models, compared across 50 protocols in [[patterns/cdp-synthetics-landscape]]: per-position CDPs ([[projects/sky-maker]], [[projects/liquity]], [[projects/alchemix]], [[projects/metronome-synth]], [[projects/youves]]), collateral-split or dual-token reserves ([[projects/hylo]]), and delta-neutral hedged collateral ([[projects/ethena-usde]]). Across them, a hard redemption floor, a near-immutable core and non-endogenous collateral correlate with survival; endogenous collateral and oracle-priced minting outside the liquidation path correlate with failure.
 
 ## Selection criteria
 
