@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Trustless Monero-Starknet Atomic Swaps Using DLEQ Proofs - 📜 Development Proposals - Starknet Community Forum</title>
+    <meta name="description" content="We’ve built a prototype atomic swap bridge that enables trustless XMR ↔ STRK/ETH exchanges on Starknet L2. This brings privacy-preserving currency to Starknet’s DeFi ecosystem without custodians, bridges, or KYC. 
+What T&amp;hellip;">
+    <meta name="generator" content="Discourse 2026.5.0-latest.1 - https://github.com/discourse/discourse version d5b6f5753d53df9148a3a79bd12940f4ac7b8621">
+<link rel="icon" type="image/png" href="https://europe1.discourse-cdn.com/flex005/uploads/starknet1/optimized/2X/9/9c7af6ef31efbf89cfc6fcfdf1116100c37f4f4e_2_32x32.png">
+<link rel="apple-touch-icon" type="image/png" href="https://europe1.discourse-cdn.com/flex005/uploads/starknet1/optimized/2X/9/9c7af6ef31efbf89cfc6fcfdf1116100c37f4f4e_2_180x180.png">
+<meta name="theme-color" media="all" content="#002d61">
+
+<meta name="color-scheme" content="dark">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
+<link rel="canonical" href="https://community.starknet.io/t/trustless-monero-starknet-atomic-swaps-using-dleq-proofs/116084" />
+
+
+<link rel="search" type="application/opensearchdescription+xml" href="https://community.starknet.io/opensearch.xml" title="Starknet Community Forum Search">
+
+    
+    <link href="https://dub1.discourse-cdn.com/flex005/stylesheets/color_definitions_blue_5_2_8da6abe1f405332118fd247c26edb5a5f57573cb.css?__ws=community.starknet.io" media="all" rel="stylesheet" class="light-scheme" data-scheme-id="5"/>
+
+<link href="https://dub1.discourse-cdn.com/flex005/stylesheets/common_1539b79f612893d82221f2b8f52f665b4d9452ca.css?__ws=community.starknet.io" media="all" rel="stylesheet" data-target="common"  />
+
+  <link href="https://dub1.discourse-cdn.com/flex005/stylesheets/mobile_1539b79f612893d82221f2b8f52f665b4d9452ca.css?__ws=community.starknet.io" media="(max-width: 39.99999rem)" rel="stylesheet" data-target="mobile"  />
+  <link href="https://dub1.discourse-cdn.com/flex005/stylesheets/desktop_1539b79f612893d82221f2b8f52f665b4d9452ca.css?__ws=community.starknet.io" media="(min-width: 40rem)" rel="stylesheet" data-target="desktop"  />
+
+
+
+    <link href="https://dub1.discourse-cdn.com/flex005/stylesheets/checklist_1539b79f612893d82221f2b8f52f665b4d9452ca.css?__ws=community.starknet.io" media="all" rel="stylesheet" data-target="checklist"  />
+    <link href="https://dub1.discourse-cdn.com/flex005/stylesheets/discourse-adplugin_1539b79f612893d82221f2b8f52f665b4d9452ca.css?__ws=community.starknet.io" media="all" rel="stylesheet" data-target="discourse-adplugin"  />
+    <link href="https://dub1.discourse-cdn.com/flex005/stylesheets/discourse-ai_1539b79f612893d82221f2b8f52f665b4d9452ca.css?__ws=community.starknet.io" media="all" rel="stylesheet" data-target="discourse-ai"  />
+    <link href="https://dub1.discourse-cdn.com/flex005/stylesheets/discourse-cakeday_1539b79f612893d82221f2b8f52f665b4d9452ca.css?__ws=community.starknet.io" media="all" rel="stylesheet" data-target="discourse-cakeday"  />
+    <link href="https://dub1.discourse-cdn.com/flex005/stylesheets/discourse-details_1539b79f612893d82221f2b8f52f665b4d9452ca.css?__ws=community.starknet.io" media="all" rel="stylesheet" data-target="discourse-details"  />
+    <link href="https://dub1.discourse-cdn.com/flex005/stylesheets/discourse-github_1539b79f612893d82221f2b8f52f665b4d9452ca.css?__ws=community.starknet.io" media="all" rel="stylesheet" data-target="discourse-github"  />
+    <link href="https://dub1.discourse-cdn.com/flex005/stylesheets/discourse-lazy-videos_1539b79f612893d82221f2b8f52f665b4d9452ca.css?__ws=community.starknet.io" media="all" rel="stylesheet" data-target="discourse-lazy-videos"  />
+    <link href="https://dub1.discourse-cdn.com/flex005/stylesheets/discourse-local-dates_1539b79f612893d82221f2b8f52f665b4d9452ca.css?__ws=community.starknet.io" media="all" rel="stylesheet" data-target="discourse-local-dates"  />
+    <link href="https://dub1.discourse-cdn.com/flex005/stylesheets/discourse-math_1539b79f612893d82221f2b8f52f665b4d9452ca.css?__ws=community.starknet.io" media="all" rel="stylesheet" data-target="discourse-math"  />
+    <link href="https://dub1.discourse-cdn.com/flex005/stylesheets/discourse-narrative-bot_1539b79f612893d82221f2b8f52f665b4d9452ca.css?__ws=community.starknet.io" media="all" rel="stylesheet" data-target="discourse-narrative-bot"  />
+    <link href="https://dub1.discourse-cdn.com/flex005/stylesheets/discourse-presence_1539b79f612893d82221f2b8f52f665b4d9452ca.css?__ws=community.starknet.io" media="all" rel="stylesheet" data-target="discourse-presence"  />
+    <link href="https://dub1.discourse-cdn.com/flex005/stylesheets/discourse-solved_1539b79f612893d82221f2b8f52f665b4d9452ca.css?__ws=community.starknet.io" media="all" rel="stylesheet" data-target="discourse-solved"  />
+    <link href="https://dub1.discourse-cdn.com/flex005/stylesheets/footnote_1539b79f612893d82221f2b8f52f665b4d9452ca.css?__ws=community.starknet.io" media="all" rel="stylesheet" data-target="footnote"  />
+    <link href="https://dub1.discourse-cdn.com/flex005/stylesheets/hosted-site_1539b79f612893d82221f2b8f52f665b4d9452ca.css?__ws=community.starknet.io" media="all" rel="stylesheet" data-target="hosted-site"  />
+    <link href="https://dub1.discourse-cdn.com/flex005/stylesheets/poll_1539b79f612893d82221f2b8f52f665b4d9452ca.css?__ws=community.starknet.io" media="all" rel="stylesheet" data-target="poll"  />
+    <link href="https://dub1.discourse-cdn.com/flex005/stylesheets/spoiler-alert_1539b79f612893d82221f2b8f52f665b4d9452ca.css?__ws=community.starknet.io" media="all" rel="stylesheet" data-target="spoiler-alert"  />
+    <link href="https://dub1.discourse-cdn.com/flex005/stylesheets/discourse-ai_mobile_1539b79f612893d82221f2b8f52f665b4d9452ca.css?__ws=community.starknet.io" media="(max-width: 39.99999rem)" rel="stylesheet" data-target="discourse-ai_mobile"  />
+    <link href="https://dub1.discourse-cdn.com/flex005/stylesheets/discourse-ai_desktop_1539b79f612893d82221f2b8f52f665b4d9452ca.css?__ws=community.starknet.io" media="(min-width: 40rem)" rel="stylesheet" data-target="discourse-ai_desktop"  />
+    <link href="https://dub1.discourse-cdn.com/flex005/stylesheets/poll_desktop_1539b79f612893d82221f2b8f52f665b4d9452ca.css?__ws=community.starknet.io" media="(min-width: 40rem)" rel="stylesheet" data-target="poll_desktop"  />
+
+  <link href="https://dub1.discourse-cdn.com/flex005/stylesheets/common_theme_4_5e6a97a8e25ec62ecb620b3895f656cb72088b2e.css?__ws=community.starknet.io" media="all" rel="stylesheet" data-target="common_theme" data-theme-id="4" data-theme-name="coloured text"/>
+<link href="https://dub1.discourse-cdn.com/flex005/stylesheets/common_theme_2_b3c497586fda059d0fa14131ec87f04edaeab643.css?__ws=community.starknet.io" media="all" rel="stylesheet" data-target="common_theme" data-theme-id="2" data-theme-name="dark"/>
+    <link href="https://dub1.discourse-cdn.com/flex005/stylesheets/mobile_theme_2_87437b6d9f8b71c2d4dd09af9a035b460eb23d83.css?__ws=community.starknet.io" media="(max-width: 39.99999rem)" rel="stylesheet" data-target="mobile_theme" data-theme-id="2" data-theme-name="dark"/>
+    
+
+    
+    
+        <link rel="alternate nofollow" type="application/rss+xml" title="RSS feed of &#39;Trustless Monero-Starknet Atomic Swaps Using DLEQ Proofs&#39;" href="https://community.starknet.io/t/trustless-monero-starknet-atomic-swaps-using-dleq-proofs/116084.rss" />
+    <meta property="og:site_name" content="Starknet Community Forum" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:image" content="https://europe1.discourse-cdn.com/flex005/uploads/starknet1/original/2X/9/9c7af6ef31efbf89cfc6fcfdf1116100c37f4f4e.png" />
+<meta property="og:image" content="https://europe1.discourse-cdn.com/flex005/uploads/starknet1/original/2X/9/9c7af6ef31efbf89cfc6fcfdf1116100c37f4f4e.png" />
+<meta property="og:url" content="https://community.starknet.io/t/trustless-monero-starknet-atomic-swaps-using-dleq-proofs/116084" />
+<meta name="twitter:url" content="https://community.starknet.io/t/trustless-monero-starknet-atomic-swaps-using-dleq-proofs/116084" />
+<meta property="og:title" content="Trustless Monero-Starknet Atomic Swaps Using DLEQ Proofs" />
+<meta name="twitter:title" content="Trustless Monero-Starknet Atomic Swaps Using DLEQ Proofs" />
+<meta property="og:description" content="We’ve built a prototype atomic swap bridge that enables trustless XMR ↔ STRK/ETH exchanges on Starknet L2. This brings privacy-preserving currency to Starknet’s DeFi ecosystem without custodians, bridges, or KYC.  What This Enables for Starknet   Trustless swaps between XMR and Starknet assets using cryptographic binding via DLEQ proofs Ultra-low gas costs: ~$0.01-0.05 per swap verification (~270k-440k gas) Privacy-respecting gateway to DeFi for Monero users No bridges or custodians - pure crypt..." />
+<meta name="twitter:description" content="We’ve built a prototype atomic swap bridge that enables trustless XMR ↔ STRK/ETH exchanges on Starknet L2. This brings privacy-preserving currency to Starknet’s DeFi ecosystem without custodians, bridges, or KYC.  What This Enables for Starknet   Trustless swaps between XMR and Starknet assets using cryptographic binding via DLEQ proofs Ultra-low gas costs: ~$0.01-0.05 per swap verification (~270k-440k gas) Privacy-respecting gateway to DeFi for Monero users No bridges or custodians - pure crypt..." />
+<meta property="og:article:section" content="📜 Development Proposals" />
+<meta property="og:article:section:color" content="0088CC" />
+<meta property="article:published_time" content="2025-12-09T01:38:38+00:00" />
+<meta property="og:ignore_canonical" content="true" />
+
+
+    
+  </head>
+  <body class="crawler ">
+    
+    <header>
+  <a href="/">Starknet Community Forum</a>
+</header>
+
+    <div id="main-outlet" class="wrap" role="main">
+        <div id="topic-title">
+    <h1>
+      <a href="/t/trustless-monero-starknet-atomic-swaps-using-dleq-proofs/116084">Trustless Monero-Starknet Atomic Swaps Using DLEQ Proofs</a>
+    </h1>
+
+      <div class="topic-category" itemscope itemtype="http://schema.org/BreadcrumbList">
+          <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+            <a href="/c/development-proposals/14" class="badge-wrapper bullet" itemprop="item">
+              <span class='badge-category-bg' style='background-color: #0088CC'></span>
+              <span class='badge-category clear-badge'>
+                <span class='category-name' itemprop='name'>📜 Development Proposals</span>
+              </span>
+            </a>
+            <meta itemprop="position" content="1" />
+          </span>
+      </div>
+
+  </div>
+
+  
+
+    <div itemscope="itemscope" itemtype="http://schema.org/DiscussionForumPosting">
+      <meta itemprop='headline' content='Trustless Monero-Starknet Atomic Swaps Using DLEQ Proofs'>
+      <link itemprop='url' href='https://community.starknet.io/t/trustless-monero-starknet-atomic-swaps-using-dleq-proofs/116084'>
+      <meta itemprop='datePublished' content='2025-12-09T01:38:38Z'>
+      <meta itemprop='keywords' content=''>
+          <meta itemprop='articleSection' content='📜 Development Proposals'>
+        <div itemprop='publisher' itemscope itemtype="http://schema.org/Organization">
+          <meta itemprop='name' content='Starknet'>
+            <div itemprop='logo' itemscope itemtype="http://schema.org/ImageObject">
+              <meta itemprop='url' content='https://europe1.discourse-cdn.com/flex005/uploads/starknet1/original/2X/9/9def831effb03d903767060faf1952ef675d5c86.png'>
+            </div>
+        </div>
+
+
+
+          <div id='post_1'  class='topic-body crawler-post'>
+            <div class='crawler-post-meta'>
+              <span class="creator" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <a rel='nofollow' href='https://community.starknet.io/u/espejelomar'><span itemprop="name">espejelomar</span></a>
+                  <meta itemprop='url' content='https://community.starknet.io/u/espejelomar'>
+                
+              </span>
+
+                <link itemprop="mainEntityOfPage" href="https://community.starknet.io/t/trustless-monero-starknet-atomic-swaps-using-dleq-proofs/116084">
+
+
+              <span class="crawler-post-infos">
+                  <time  datetime='2025-12-09T01:38:38Z' class='post-time'>
+                    December 9, 2025,  1:38am
+                  </time>
+                  <meta itemprop='dateModified' content='2025-12-09T17:16:58Z'>
+              <span itemprop="position">1</span>
+              </span>
+            </div>
+            <div class='post' itemprop="text">
+              <p>We’ve built a prototype atomic swap bridge that enables trustless XMR ↔ STRK/ETH exchanges on Starknet L2. This brings privacy-preserving currency to Starknet’s DeFi ecosystem without custodians, bridges, or KYC.</p>
+<p><strong>What This Enables for Starknet</strong></p>
+<ul>
+<li>Trustless swaps between XMR and Starknet assets using cryptographic binding via DLEQ proofs</li>
+<li>Ultra-low gas costs: ~$0.01-0.05 per swap verification (~270k-440k gas)</li>
+<li>Privacy-respecting gateway to DeFi for Monero users</li>
+<li>No bridges or custodians - pure cryptographic security</li>
+</ul>
+<p><strong>Cairo Implementation Highlights</strong></p>
+<p>The implementation leverages Starknet’s Cairo VM capabilities:</p>
+<ol>
+<li><strong>DLEQ Proof Verification</strong>: On-chain verification using Garaga v1.0.1 MSM library for elliptic curve operations</li>
+<li><strong>BLAKE2s Challenge Computation</strong>: Gas-optimized at ~500k gas for full verification</li>
+<li><strong>Production-Grade Libraries</strong>: OpenZeppelin Cairo Contracts v2.0.0 for security primitives</li>
+<li><strong>Ed25519 Point Operations</strong>: Efficient scalar multiplication and point compression/decompression</li>
+</ol>
+<p><strong>Protocol Flow</strong></p>
+<ol>
+<li>Alice generates secret scalar <code>t</code> and creates adaptor signature</li>
+<li>Alice deploys <code>AtomicLock</code> contract on Starknet with:
+<ul>
+<li>Hashlock <code>H = SHA-256(t)</code></li>
+<li>Adaptor point <code>T = t·G</code> (Ed25519)</li>
+<li>DLEQ proof proving <code>∃t: SHA-256(t) = H ∧ t·G = T</code></li>
+</ul>
+</li>
+<li>Bob verifies DLEQ proof on-chain, unlocks contract by revealing <code>t</code></li>
+<li>Alice detects secret reveal via <code>Unlocked</code> event, completes Monero transaction</li>
+</ol>
+<p><strong>Current Development Status</strong></p>
+<p>Completed:</p>
+<ul>
+<li>BLAKE2s challenge compatibility between Rust and Cairo</li>
+<li>DLEQ proof generation (Rust) and verification (Cairo)</li>
+<li>Test suite with 139 production-grade test vectors</li>
+<li>CI/CD workflow with automated testing</li>
+<li>Informal security audit of critical paths</li>
+</ul>
+<p>in Progress:</p>
+<ul>
+<li>Web interface for testnet experimentation</li>
+<li>Sepolia testnet deployment</li>
+<li>Race condition mitigations (two-phase unlock, watchtower service)</li>
+</ul>
+<p><strong>Technical Resources</strong></p>
+<p>GitHub: <a href="https://github.com/omarespejel/monero-starknet-atomic-swap" class="inline-onebox" rel="noopener nofollow ugc">GitHub - omarespejel/monero-starknet-atomic-swap: Cross-chain atomic swap: Monero adaptor signatures + Starknet Cairo contracts with ED25519 MSM verification and DLEQ proofs</a></p>
+<p><strong>Known Limitations</strong></p>
+<p>This is alpha software under active development:</p>
+<ul>
+<li>Protocol-level race condition exists</li>
+<li>Monero integration uses simplified adaptor signatures, not full CLSAG</li>
+<li>External security audit pending</li>
+<li>Recommended for small amounts only (under $100 equivalent) until v0.8.0 mitigations</li>
+</ul>
+<p>I’m available to discuss Cairo implementation details, Starknet/Cairo technical specifics, and collaboration opportunities</p>
+<p>Updates will be posted here as development progresses. Community feedback is essential for building robust infrastructure</p>
+<hr>
+<p><strong>Disclaimer</strong>: This is experimental software under active development. Do not use with real funds without security audit</p>
+            </div>
+
+              <div itemprop="interactionStatistic" itemscope="itemscope" itemtype="http://schema.org/InteractionCounter">
+                  <meta itemprop="interactionType" content="http://schema.org/LikeAction"/>
+                  <meta itemprop="userInteractionCount" content="0" />
+                <span class='post-likes'></span>
+              </div>
+
+
+            
+
+
+          </div>
+          <div id='post_2' itemprop="comment" itemscope="itemscope" itemtype="http://schema.org/Comment" class='topic-body crawler-post'>
+            <div class='crawler-post-meta'>
+              <span class="creator" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <a rel='nofollow' href='https://community.starknet.io/u/gaetbout'><span itemprop="name">gaetbout</span></a>
+                  <meta itemprop='url' content='https://community.starknet.io/u/gaetbout'>
+                
+              </span>
+
+
+
+              <span class="crawler-post-infos">
+                  <time itemprop="datePublished" datetime='2025-12-09T08:44:07Z' class='post-time'>
+                    December 9, 2025,  8:44am
+                  </time>
+                  <meta itemprop='dateModified' content='2025-12-09T08:44:07Z'>
+              <span itemprop="position">2</span>
+              </span>
+            </div>
+            <div class='post' itemprop="text">
+              <p>Hey,</p>
+<p>idk if normal but the repo isn’t public (or wrong link).<br>
+Would like to have a look <img src="https://emoji.discourse-cdn.com/twitter/slight_smile.png?v=15" title=":slight_smile:" class="emoji" alt=":slight_smile:" loading="lazy" width="20" height="20"></p>
+<p>G</p>
+            </div>
+
+              <div itemprop="interactionStatistic" itemscope="itemscope" itemtype="http://schema.org/InteractionCounter">
+                  <meta itemprop="interactionType" content="http://schema.org/LikeAction"/>
+                  <meta itemprop="userInteractionCount" content="0" />
+                <span class='post-likes'></span>
+              </div>
+
+
+            
+
+
+          </div>
+          <div id='post_3' itemprop="comment" itemscope="itemscope" itemtype="http://schema.org/Comment" class='topic-body crawler-post'>
+            <div class='crawler-post-meta'>
+              <span class="creator" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <a rel='nofollow' href='https://community.starknet.io/u/espejelomar'><span itemprop="name">espejelomar</span></a>
+                  <meta itemprop='url' content='https://community.starknet.io/u/espejelomar'>
+                
+              </span>
+
+
+
+              <span class="crawler-post-infos">
+                  <time itemprop="datePublished" datetime='2025-12-10T02:32:21Z' class='post-time'>
+                    December 10, 2025,  2:32am
+                  </time>
+                  <meta itemprop='dateModified' content='2025-12-10T02:32:21Z'>
+              <span itemprop="position">3</span>
+              </span>
+            </div>
+            <div class='post' itemprop="text">
+              <p>Hey <a class="mention" href="/u/gaetbout">@gaetbout</a>! The repo is open now, just had some visibility issues initially. You can check it out here: <a href="https://github.com/omarespejel/monero-starknet-atomic-swap" class="inline-onebox" rel="noopener nofollow ugc">GitHub - omarespejel/monero-starknet-atomic-swap: Cross-chain atomic swap: Monero adaptor signatures + Starknet Cairo contracts with ED25519 MSM verification and DLEQ proofs</a></p>
+<p>Feel free to take a look and let me know if you have any questions or feedback!</p>
+            </div>
+
+              <div itemprop="interactionStatistic" itemscope="itemscope" itemtype="http://schema.org/InteractionCounter">
+                  <meta itemprop="interactionType" content="http://schema.org/LikeAction"/>
+                  <meta itemprop="userInteractionCount" content="0" />
+                <span class='post-likes'></span>
+              </div>
+
+
+            
+
+
+          </div>
+          <div id='post_4' itemprop="comment" itemscope="itemscope" itemtype="http://schema.org/Comment" class='topic-body crawler-post'>
+            <div class='crawler-post-meta'>
+              <span class="creator" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <a rel='nofollow' href='https://community.starknet.io/u/Teku'><span itemprop="name">Teku</span></a>
+                  <meta itemprop='url' content='https://community.starknet.io/u/Teku'>
+                
+              </span>
+
+
+
+              <span class="crawler-post-infos">
+                  <time itemprop="datePublished" datetime='2025-12-22T02:33:49Z' class='post-time'>
+                    December 22, 2025,  2:33am
+                  </time>
+                  <meta itemprop='dateModified' content='2025-12-22T02:33:49Z'>
+              <span itemprop="position">4</span>
+              </span>
+            </div>
+            <div class='post' itemprop="text">
+              <p>Looks great. I think XMR to STRK could bring some great privacy options to Starknet. Currently obtaining and selling XMR can be  troublesome, especially with a lot of CEX’s no longer trading it.</p>
+<p>Is there a road map to when this could possibly be a reality?</p>
+            </div>
+
+              <div itemprop="interactionStatistic" itemscope="itemscope" itemtype="http://schema.org/InteractionCounter">
+                  <meta itemprop="interactionType" content="http://schema.org/LikeAction"/>
+                  <meta itemprop="userInteractionCount" content="0" />
+                <span class='post-likes'></span>
+              </div>
+
+
+            
+
+
+          </div>
+
+    </div>
+
+
+    <div id="related-topics" class="more-topics__list " role="complementary" aria-labelledby="related-topics-title">
+  <h3 id="related-topics-title" class="more-topics__list-title">
+    Related topics
+  </h3>
+  <div class="topic-list-container" itemscope itemtype='http://schema.org/ItemList'>
+    <meta itemprop='itemListOrder' content='http://schema.org/ItemListOrderDescending'>
+    <table class='topic-list'>
+      <thead>
+        <tr>
+          <th>Topic</th>
+          <th></th>
+          <th class="replies">Replies</th>
+          <th class="views">Views</th>
+          <th>Activity</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="topic-list-item" id="topic-list-item-116123">
+            <td class="main-link" itemprop='itemListElement' itemscope itemtype='http://schema.org/ListItem'>
+              <meta itemprop='position' content='1'>
+              <span class="link-top-line">
+                <a itemprop='url' href='https://community.starknet.io/t/snip-36-in-protocol-proof-verification/116123' class='title raw-link raw-topic-link'>Snip 36: in protocol proof verification</a>
+              </span>
+              <div class="link-bottom-line">
+                  <a href='/c/development-proposals/snip/7' class='badge-wrapper bullet'>
+                    <span class='badge-category-bg' style='background-color: #F7941D'></span>
+                    <span class='badge-category clear-badge'>
+                      <span class='category-name'>SNIPs</span>
+                    </span>
+                  </a>
+                  <div class="discourse-tags">
+                  </div>
+              </div>
+            </td>
+            <td class="replies">
+              <span class='posts' title='posts'>6</span>
+            </td>
+            <td class="views">
+              <span class='views' title='views'>700</span>
+            </td>
+            <td>
+              March 22, 2026
+            </td>
+          </tr>
+          <tr class="topic-list-item" id="topic-list-item-114056">
+            <td class="main-link" itemprop='itemListElement' itemscope itemtype='http://schema.org/ListItem'>
+              <meta itemprop='position' content='2'>
+              <span class="link-top-line">
+                <a itemprop='url' href='https://community.starknet.io/t/two-new-things-you-can-do-with-the-stone-prover-today/114056' class='title raw-link raw-topic-link'>Two new things you can do with the Stone prover TODAY</a>
+              </span>
+              <div class="link-bottom-line">
+                  <a href='/c/general/16' class='badge-wrapper bullet'>
+                    <span class='badge-category-bg' style='background-color: #0088CC'></span>
+                    <span class='badge-category clear-badge'>
+                      <span class='category-name'>🤷‍♀️ All-Purpose Hangout</span>
+                    </span>
+                  </a>
+                  <div class="discourse-tags">
+                      <a href='https://community.starknet.io/tag/cairo/6' class='discourse-tag'>cairo</a>
+                      ,&nbsp;
+                      <a href='https://community.starknet.io/tag/provers/29' class='discourse-tag'>provers</a>
+                      
+                  </div>
+              </div>
+            </td>
+            <td class="replies">
+              <span class='posts' title='posts'>0</span>
+            </td>
+            <td class="views">
+              <span class='views' title='views'>565</span>
+            </td>
+            <td>
+              May 8, 2024
+            </td>
+          </tr>
+          <tr class="topic-list-item" id="topic-list-item-93855">
+            <td class="main-link" itemprop='itemListElement' itemscope itemtype='http://schema.org/ListItem'>
+              <meta itemprop='position' content='3'>
+              <span class="link-top-line">
+                <a itemprop='url' href='https://community.starknet.io/t/starknet-curve-libraries/93855' class='title raw-link raw-topic-link'>Starknet curve libraries</a>
+              </span>
+              <div class="link-bottom-line">
+                  <a href='/c/help-and-support/support/5' class='badge-wrapper bullet'>
+                    <span class='badge-category-bg' style='background-color: #8C6238'></span>
+                    <span class='badge-category clear-badge'>
+                      <span class='category-name'>Support</span>
+                    </span>
+                  </a>
+                  <div class="discourse-tags">
+                  </div>
+              </div>
+            </td>
+            <td class="replies">
+              <span class='posts' title='posts'>0</span>
+            </td>
+            <td class="views">
+              <span class='views' title='views'>830</span>
+            </td>
+            <td>
+              May 26, 2023
+            </td>
+          </tr>
+          <tr class="topic-list-item" id="topic-list-item-116135">
+            <td class="main-link" itemprop='itemListElement' itemscope itemtype='http://schema.org/ListItem'>
+              <meta itemprop='position' content='4'>
+              <span class="link-top-line">
+                <a itemprop='url' href='https://community.starknet.io/t/showcase-glacis-protocol-post-quantum-proof-of-humanity-on-starknet/116135' class='title raw-link raw-topic-link'>[Showcase] Glacis Protocol — Post-Quantum Proof of Humanity on Starknet</a>
+              </span>
+              <div class="link-bottom-line">
+                  <a href='/c/general/16' class='badge-wrapper bullet'>
+                    <span class='badge-category-bg' style='background-color: #0088CC'></span>
+                    <span class='badge-category clear-badge'>
+                      <span class='category-name'>🤷‍♀️ All-Purpose Hangout</span>
+                    </span>
+                  </a>
+                  <div class="discourse-tags">
+                      <a href='https://community.starknet.io/tag/cairo/6' class='discourse-tag'>cairo</a>
+                      ,&nbsp;
+                      <a href='https://community.starknet.io/tag/tooling/11' class='discourse-tag'>tooling</a>
+                      ,&nbsp;
+                      <a href='https://community.starknet.io/tag/decentralization/27' class='discourse-tag'>decentralization</a>
+                      
+                  </div>
+              </div>
+            </td>
+            <td class="replies">
+              <span class='posts' title='posts'>0</span>
+            </td>
+            <td class="views">
+              <span class='views' title='views'>40</span>
+            </td>
+            <td>
+              February 18, 2026
+            </td>
+          </tr>
+          <tr class="topic-list-item" id="topic-list-item-114442">
+            <td class="main-link" itemprop='itemListElement' itemscope itemtype='http://schema.org/ListItem'>
+              <meta itemprop='position' content='5'>
+              <span class="link-top-line">
+                <a itemprop='url' href='https://community.starknet.io/t/staking-on-starknet-voting-proposal/114442' class='title raw-link raw-topic-link'>Staking on Starknet voting proposal</a>
+              </span>
+              <div class="link-bottom-line">
+                  <a href='/c/governance/15' class='badge-wrapper bullet'>
+                    <span class='badge-category-bg' style='background-color: #0088CC'></span>
+                    <span class='badge-category clear-badge'>
+                      <span class='category-name'>🏛   Governance</span>
+                    </span>
+                  </a>
+                  <div class="discourse-tags">
+                  </div>
+              </div>
+            </td>
+            <td class="replies">
+              <span class='posts' title='posts'>24</span>
+            </td>
+            <td class="views">
+              <span class='views' title='views'>1826</span>
+            </td>
+            <td>
+              November 14, 2024
+            </td>
+          </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+
+
+    </div>
+    <footer class="container wrap">
+  <nav class='crawler-nav'>
+    <ul>
+      <li itemscope itemtype='http://schema.org/SiteNavigationElement'>
+        <span itemprop='name'>
+          <a href='/' itemprop="url">Home </a>
+        </span>
+      </li>
+      <li itemscope itemtype='http://schema.org/SiteNavigationElement'>
+        <span itemprop='name'>
+          <a href='/categories' itemprop="url">Categories </a>
+        </span>
+      </li>
+      <li itemscope itemtype='http://schema.org/SiteNavigationElement'>
+        <span itemprop='name'>
+          <a href='/guidelines' itemprop="url">Guidelines </a>
+        </span>
+      </li>
+        <li itemscope itemtype='http://schema.org/SiteNavigationElement'>
+          <span itemprop='name'>
+            <a href='/tos' itemprop="url">Terms of Service </a>
+          </span>
+        </li>
+        <li itemscope itemtype='http://schema.org/SiteNavigationElement'>
+          <span itemprop='name'>
+            <a href='/privacy' itemprop="url">Privacy Policy </a>
+          </span>
+        </li>
+    </ul>
+  </nav>
+  <p class='powered-by-link'>Powered by <a href="https://www.discourse.org">Discourse</a>, best viewed with JavaScript enabled</p>
+</footer>
+
+    
+    
+  </body>
+  
+</html>

@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>NEAR Intents - Retroactive Grants - Zcash Community Forum</title>
+    <meta name="description" content="Hi all - sharing our proposal for the NEAR Intents support of Zcash here and looking forward to getting community feedback: Proposal Link. 
+The proposal covers work that’s already been completed and live in production, f&amp;hellip;">
+    <meta name="generator" content="Discourse 2026.5.0-latest - https://github.com/discourse/discourse version c49629cd1b9f0f99767bf970c364708bc8d65098">
+<link rel="icon" type="image/png" href="https://global.discourse-cdn.com/zcash/optimized/2X/2/2e49c52ed4ae155178b3f89440b914f99b85374a_2_32x32.png">
+<link rel="apple-touch-icon" type="image/png" href="https://global.discourse-cdn.com/zcash/optimized/2X/2/2e49c52ed4ae155178b3f89440b914f99b85374a_2_180x180.png">
+<meta name="theme-color" media="all" content="#ffffff">
+
+<meta name="color-scheme" content="light">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
+<link rel="canonical" href="https://forum.zcashcommunity.com/t/near-intents/54588" />
+
+
+<link rel="search" type="application/opensearchdescription+xml" href="https://forum.zcashcommunity.com/opensearch.xml" title="Zcash Community Forum Search">
+
+    
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/color_definitions_light_2_2_96240468ef736c2a0cf738dad7836753b88bcaa6.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" class="light-scheme" data-scheme-id="2"/>
+
+<link href="https://sea2.discourse-cdn.com/zcash/stylesheets/common_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="common"  />
+
+  <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/mobile_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="(max-width: 39.99999rem)" rel="stylesheet" data-target="mobile"  />
+  <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/desktop_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="(min-width: 40rem)" rel="stylesheet" data-target="desktop"  />
+
+
+
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/chat_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="chat"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/checklist_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="checklist"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/discourse-ai_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="discourse-ai"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/discourse-cakeday_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="discourse-cakeday"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/discourse-data-explorer_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="discourse-data-explorer"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/discourse-details_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="discourse-details"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/discourse-github_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="discourse-github"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/discourse-lazy-videos_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="discourse-lazy-videos"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/discourse-local-dates_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="discourse-local-dates"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/discourse-math_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="discourse-math"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/discourse-narrative-bot_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="discourse-narrative-bot"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/discourse-policy_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="discourse-policy"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/discourse-presence_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="discourse-presence"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/discourse-reactions_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="discourse-reactions"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/discourse-rewind_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="discourse-rewind"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/discourse-solved_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="discourse-solved"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/discourse-templates_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="discourse-templates"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/discourse-topic-voting_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="discourse-topic-voting"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/footnote_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="footnote"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/hosted-site_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="hosted-site"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/poll_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="poll"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/spoiler-alert_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="spoiler-alert"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/chat_mobile_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="(max-width: 39.99999rem)" rel="stylesheet" data-target="chat_mobile"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/discourse-ai_mobile_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="(max-width: 39.99999rem)" rel="stylesheet" data-target="discourse-ai_mobile"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/discourse-reactions_mobile_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="(max-width: 39.99999rem)" rel="stylesheet" data-target="discourse-reactions_mobile"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/discourse-rewind_mobile_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="(max-width: 39.99999rem)" rel="stylesheet" data-target="discourse-rewind_mobile"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/chat_desktop_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="(min-width: 40rem)" rel="stylesheet" data-target="chat_desktop"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/discourse-ai_desktop_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="(min-width: 40rem)" rel="stylesheet" data-target="discourse-ai_desktop"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/discourse-reactions_desktop_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="(min-width: 40rem)" rel="stylesheet" data-target="discourse-reactions_desktop"  />
+    <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/poll_desktop_594eb8f9db5638ac4e8b3576c1cc80b77091e165.css?__ws=forum.zcashcommunity.com" media="(min-width: 40rem)" rel="stylesheet" data-target="poll_desktop"  />
+
+  <link href="https://sea2.discourse-cdn.com/zcash/stylesheets/common_theme_7_ff52d0b05a2cb51c8e97f151481343a2896d7960.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="common_theme" data-theme-id="7" data-theme-name="category banners"/>
+<link href="https://sea2.discourse-cdn.com/zcash/stylesheets/common_theme_9_05ce3e3306a1128045c250beaf3ea6f19c41f0ad.css?__ws=forum.zcashcommunity.com" media="all" rel="stylesheet" data-target="common_theme" data-theme-id="9" data-theme-name="sidebar theme toggle"/>
+    
+    
+
+    
+    
+        <link rel="alternate nofollow" type="application/rss+xml" title="RSS feed of &#39;NEAR Intents&#39;" href="https://forum.zcashcommunity.com/t/near-intents/54588.rss" />
+    <meta property="og:site_name" content="Zcash Community Forum" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:image" content="https://global.discourse-cdn.com/zcash/original/2X/2/2e49c52ed4ae155178b3f89440b914f99b85374a.png" />
+<meta property="og:image" content="https://global.discourse-cdn.com/zcash/original/2X/2/2e49c52ed4ae155178b3f89440b914f99b85374a.png" />
+<meta property="og:url" content="https://forum.zcashcommunity.com/t/near-intents/54588" />
+<meta name="twitter:url" content="https://forum.zcashcommunity.com/t/near-intents/54588" />
+<meta property="og:title" content="NEAR Intents" />
+<meta name="twitter:title" content="NEAR Intents" />
+<meta property="og:description" content="Hi all - sharing our proposal for the NEAR Intents support of Zcash here and looking forward to getting community feedback: Proposal Link.  The proposal covers work that’s already been completed and live in production, focused on integrating Zcash with NEAR Intents to make it easy for users to convert 130+ assets into ZEC and to drive usage of the Orchard pool. This ended up unlocking several downstream integrations and led to more venues for people to trade ZEC.  A huge highlight in all of this..." />
+<meta name="twitter:description" content="Hi all - sharing our proposal for the NEAR Intents support of Zcash here and looking forward to getting community feedback: Proposal Link.  The proposal covers work that’s already been completed and live in production, focused on integrating Zcash with NEAR Intents to make it easy for users to convert 130+ assets into ZEC and to drive usage of the Orchard pool. This ended up unlocking several downstream integrations and led to more venues for people to trade ZEC.  A huge highlight in all of this..." />
+<meta property="og:article:section" content="Community Grants" />
+<meta property="og:article:section:color" content="F4B76C" />
+<meta property="og:article:section" content="Retroactive Grants" />
+<meta property="og:article:section:color" content="652D90" />
+<meta name="twitter:label1" value="Reading time" />
+<meta name="twitter:data1" value="4 mins 🕑" />
+<meta name="twitter:label2" value="Likes" />
+<meta name="twitter:data2" value="35 ❤" />
+<meta property="article:published_time" content="2026-02-06T16:32:36+00:00" />
+<meta property="og:ignore_canonical" content="true" />
+
+
+    
+  </head>
+  <body class="crawler ">
+    
+    <header>
+  <a href="/">Zcash Community Forum</a>
+</header>
+
+    <div id="main-outlet" class="wrap" role="main">
+        <div id="topic-title">
+    <h1>
+      <a href="/t/near-intents/54588">NEAR Intents</a>
+    </h1>
+
+      <div class="topic-category" itemscope itemtype="http://schema.org/BreadcrumbList">
+          <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+            <a href="/c/grants/33" class="badge-wrapper bullet" itemprop="item">
+              <span class='badge-category-bg' style='background-color: #F4B76C'></span>
+              <span class='badge-category clear-badge'>
+                <span class='category-name' itemprop='name'>Community Grants</span>
+              </span>
+            </a>
+            <meta itemprop="position" content="1" />
+          </span>
+          <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+            <a href="/c/grants/retroactive-grants/54" class="badge-wrapper bullet" itemprop="item">
+              <span class='badge-category-bg' style='background-color: #652D90'></span>
+              <span class='badge-category clear-badge'>
+                <span class='category-name' itemprop='name'>Retroactive Grants</span>
+              </span>
+            </a>
+            <meta itemprop="position" content="2" />
+          </span>
+      </div>
+
+  </div>
+
+  
+
+    <div itemscope="itemscope" itemtype="http://schema.org/DiscussionForumPosting">
+      <meta itemprop='headline' content='NEAR Intents'>
+      <link itemprop='url' href='https://forum.zcashcommunity.com/t/near-intents/54588'>
+      <meta itemprop='datePublished' content='2026-02-06T16:32:36Z'>
+      <meta itemprop='keywords' content=''>
+          <meta itemprop='articleSection' content='Retroactive Grants'>
+        <div itemprop='publisher' itemscope itemtype="http://schema.org/Organization">
+          <meta itemprop='name' content='Zcash Foundation'>
+            <div itemprop='logo' itemscope itemtype="http://schema.org/ImageObject">
+              <meta itemprop='url' content='https://global.discourse-cdn.com/zcash/original/3X/f/a/fa836ba94f5b129a26c82ec17dc376eef9bb8831.png'>
+            </div>
+        </div>
+
+
+
+          <div id='post_1'  class='topic-body crawler-post'>
+            <div class='crawler-post-meta'>
+              <span class="creator" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <a rel='nofollow' href='https://forum.zcashcommunity.com/u/blippitty'><span itemprop="name">blippitty</span></a>
+                  <meta itemprop='url' content='https://forum.zcashcommunity.com/u/blippitty'>
+                
+              </span>
+
+                <link itemprop="mainEntityOfPage" href="https://forum.zcashcommunity.com/t/near-intents/54588">
+
+
+              <span class="crawler-post-infos">
+                  <time  datetime='2026-02-06T16:32:36Z' class='post-time'>
+                    February 6, 2026,  4:32pm
+                  </time>
+                  <meta itemprop='dateModified' content='2026-02-06T16:35:13Z'>
+              <span itemprop="position">1</span>
+              </span>
+            </div>
+            <div class='post' itemprop="text">
+              <p>Hi all - sharing our proposal for the NEAR Intents support of Zcash here and looking forward to getting community feedback: <a href="https://github.com/Financial-Privacy-Foundation/ZcashCoinholderGrantsProgram/issues/15" rel="noopener nofollow ugc">Proposal Link</a>.</p>
+<p>The proposal covers work that’s already been completed and live in production, focused on integrating Zcash with NEAR Intents to make it easy for users to convert 130+ assets into ZEC and to drive usage of the Orchard pool. This ended up unlocking several downstream integrations and led to more venues for people to trade ZEC.</p>
+<p>A huge highlight in all of this has been the welcoming Zcash community and the collaboration between our ecosystems. We look forward to continuing to deepen our partnerships and integrations!</p>
+            </div>
+
+              <div itemprop="interactionStatistic" itemscope="itemscope" itemtype="http://schema.org/InteractionCounter">
+                  <meta itemprop="interactionType" content="http://schema.org/LikeAction"/>
+                  <meta itemprop="userInteractionCount" content="9" />
+                <span class='post-likes'>9 Likes</span>
+              </div>
+
+                <div class='crawler-linkback-list'>
+                    <div>
+                      <a href="https://forum.zcashcommunity.com/t/about-the-retroactive-grants-category/52106/4">About the Retroactive Grants category</a>
+                    </div>
+                    <div>
+                      <a href="https://forum.zcashcommunity.com/t/call-for-proposals-coinholder-directed-retroactive-grants-program-q1-2026/54208/8">Call For Proposals: Coinholder-Directed Retroactive Grants Program (Q1 2026)</a>
+                    </div>
+                    <div>
+                      <a href="https://forum.zcashcommunity.com/t/call-for-proposals-coinholder-directed-retroactive-grants-program-q1-2026/54208/6">Call For Proposals: Coinholder-Directed Retroactive Grants Program (Q1 2026)</a>
+                    </div>
+                </div>
+
+            
+
+
+          </div>
+          <div id='post_2' itemprop="comment" itemscope="itemscope" itemtype="http://schema.org/Comment" class='topic-body crawler-post'>
+            <div class='crawler-post-meta'>
+              <span class="creator" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <a rel='nofollow' href='https://forum.zcashcommunity.com/u/emersonian'><span itemprop="name">emersonian</span></a>
+                  <meta itemprop='url' content='https://forum.zcashcommunity.com/u/emersonian'>
+                
+              </span>
+
+
+
+              <span class="crawler-post-infos">
+                  <time itemprop="datePublished" datetime='2026-02-06T19:01:26Z' class='post-time'>
+                    February 6, 2026,  7:01pm
+                  </time>
+                  <meta itemprop='dateModified' content='2026-02-06T19:01:26Z'>
+              <span itemprop="position">2</span>
+              </span>
+            </div>
+            <div class='post' itemprop="text">
+              <p>NEAR and Maya, together, changed the game for Zcash. It made ZEC the first DEX-connected privacy asset with significant liquidity. Zcash liquidity and volume on NEAR is vastly deeper than on Maya, and with a larger dev team it makes sense for you to ask for a larger amount.</p>
+<p>NEAR is profiting off of every Zcash swap via the UI, right? When an affiliate username + bps has not been provided? What are the total earnings on ZEC swaps by the NEAR Intents / 1click teams so far?</p>
+<p>I would be supportive of a smaller grant amount, but my (perhaps incorrect) perspective is that NEAR is making a significant amount of profit from the volume that Zcash swaps have brought to the NEAR network. Driven by Zcash’s product market fit of “privacy”, aligning with NEAR’s fit of “connectedness”.</p>
+<p>Regardless, a huge thank you for implementing Zcash on NEAR - and I do hope that a grant is awarded. No hard feelings but I personally would prefer it to be around half the size.</p>
+<p>edit: get us a proposal for supporting shielded ZEC (orchard) and I’m sure that will be compelling!</p>
+            </div>
+
+              <div itemprop="interactionStatistic" itemscope="itemscope" itemtype="http://schema.org/InteractionCounter">
+                  <meta itemprop="interactionType" content="http://schema.org/LikeAction"/>
+                  <meta itemprop="userInteractionCount" content="3" />
+                <span class='post-likes'>3 Likes</span>
+              </div>
+
+
+            
+
+
+          </div>
+          <div id='post_3' itemprop="comment" itemscope="itemscope" itemtype="http://schema.org/Comment" class='topic-body crawler-post'>
+            <div class='crawler-post-meta'>
+              <span class="creator" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <a rel='nofollow' href='https://forum.zcashcommunity.com/u/blippitty'><span itemprop="name">blippitty</span></a>
+                  <meta itemprop='url' content='https://forum.zcashcommunity.com/u/blippitty'>
+                
+              </span>
+
+
+
+              <span class="crawler-post-infos">
+                  <time itemprop="datePublished" datetime='2026-02-06T20:50:06Z' class='post-time'>
+                    February 6, 2026,  8:50pm
+                  </time>
+                  <meta itemprop='dateModified' content='2026-02-06T20:50:06Z'>
+              <span itemprop="position">3</span>
+              </span>
+            </div>
+            <div class='post' itemprop="text">
+              <p>Thank you for the feedback.</p>
+<p>Regarding the profits, only the Intents frontend has fees and to date has made &lt;$50k. We have no fees on the API level.</p>
+<p>On shielded support - we do have shielded support implemented already and are directly supporting the growth of the Orchard pool.</p>
+            </div>
+
+              <div itemprop="interactionStatistic" itemscope="itemscope" itemtype="http://schema.org/InteractionCounter">
+                  <meta itemprop="interactionType" content="http://schema.org/LikeAction"/>
+                  <meta itemprop="userInteractionCount" content="3" />
+                <span class='post-likes'>3 Likes</span>
+              </div>
+
+
+            
+
+
+          </div>
+          <div id='post_4' itemprop="comment" itemscope="itemscope" itemtype="http://schema.org/Comment" class='topic-body crawler-post'>
+            <div class='crawler-post-meta'>
+              <span class="creator" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <a rel='nofollow' href='https://forum.zcashcommunity.com/u/pacu'><span itemprop="name">pacu</span></a>
+                  <meta itemprop='url' content='https://forum.zcashcommunity.com/u/pacu'>
+                
+              </span>
+
+
+
+              <span class="crawler-post-infos">
+                  <time itemprop="datePublished" datetime='2026-02-07T02:31:20Z' class='post-time'>
+                    February 7, 2026,  2:31am
+                  </time>
+                  <meta itemprop='dateModified' content='2026-02-07T02:40:03Z'>
+              <span itemprop="position">4</span>
+              </span>
+            </div>
+            <div class='post' itemprop="text">
+              <p>I think NEAR has been game changing. I said this to Alex personally in the last Zeboot. It solved a real problem and saved HOURS of time and having your arse between your hands while waiting and praying that “KYC-less-unless-we-want-to” CEX would come through</p>
+<p>Although as <a class="mention" href="/u/emersonian">@emersonian</a> remarked it’s surprising to see such a big sum given that NEAR charges fees over the volume operated and is charging the whole costs incurred. I as a Zcasher thought or had the idea given the information I had, that the costs and fee subsidies were an investment on their side they were doing and that they were rightfully profiting on fees given the success so this application is sort of unexpected.</p>
+<p>I use NEAR and I think it’s great. I still I’m surprised and somewhat skeptical of/confused by  the figure <a class="mention" href="/u/blippitty">@blippitty</a> is reporting while we learned that Zashi made profits in the order of millions.</p>
+            </div>
+
+              <div itemprop="interactionStatistic" itemscope="itemscope" itemtype="http://schema.org/InteractionCounter">
+                  <meta itemprop="interactionType" content="http://schema.org/LikeAction"/>
+                  <meta itemprop="userInteractionCount" content="3" />
+                <span class='post-likes'>3 Likes</span>
+              </div>
+
+
+            
+
+
+          </div>
+          <div id='post_5' itemprop="comment" itemscope="itemscope" itemtype="http://schema.org/Comment" class='topic-body crawler-post'>
+            <div class='crawler-post-meta'>
+              <span class="creator" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <a rel='nofollow' href='https://forum.zcashcommunity.com/u/aaal'><span itemprop="name">aaal</span></a>
+                  <meta itemprop='url' content='https://forum.zcashcommunity.com/u/aaal'>
+                
+              </span>
+
+
+                <link itemprop="image" href="https://global.discourse-cdn.com/zcash/original/3X/5/f/5f01a43b8cd6c2f6b5c0b904a34050e1977841c3.jpeg">
+
+              <span class="crawler-post-infos">
+                  <time itemprop="datePublished" datetime='2026-02-07T05:39:02Z' class='post-time'>
+                    February 7, 2026,  5:39am
+                  </time>
+                  <meta itemprop='dateModified' content='2026-02-07T05:39:02Z'>
+              <span itemprop="position">5</span>
+              </span>
+            </div>
+            <div class='post' itemprop="text">
+              <aside class="quote no-group" data-username="emersonian" data-post="2" data-topic="54588">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" width="24" height="24" src="https://sea2.discourse-cdn.com/zcash/user_avatar/forum.zcashcommunity.com/emersonian/48/42565_2.png" class="avatar"> emersonian:</div>
+<blockquote>
+<p>ZEC swaps by the NEAR Intents / 1click</p>
+</blockquote>
+</aside>
+<p>I also have observations about this in particular.</p>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://docs.near-intents.org/near-intents/risk-and-compliance">
+  <header class="source">
+      <img src="https://global.discourse-cdn.com/zcash/original/3X/d/c/dc19a3c9dd154706008754d9116a23360c4e4758.png" class="site-icon" alt="" data-dominant-color="CBD9ED" width="48" height="48">
+
+      <a href="https://docs.near-intents.org/near-intents/risk-and-compliance" target="_blank" rel="noopener">docs.near-intents.org</a>
+  </header>
+
+  <article class="onebox-body">
+    <div class="aspect-image" style="--aspect-ratio:690/362;"><img src="https://global.discourse-cdn.com/zcash/optimized/3X/5/f/5f01a43b8cd6c2f6b5c0b904a34050e1977841c3_2_690x362.jpeg" class="thumbnail" alt="" data-dominant-color="DCE5F8" width="690" height="362"></div>
+
+<h3><a href="https://docs.near-intents.org/near-intents/risk-and-compliance" target="_blank" rel="noopener">Risk and Compliance | NEAR Intents</a></h3>
+
+
+
+  </article>
+
+  <div class="onebox-metadata">
+    
+    
+  </div>
+
+  <div style="clear: both"></div>
+</aside>
+
+<h3><a name="p-243048-h-1" class="anchor" href="#p-243048-h-1" aria-label="Heading link"></a></h3>
+<ol>
+<li>Real-time compliance screening for 1Click Swap API quote requests</li>
+</ol>
+<pre><code class="lang-auto">Every quote request undergoes automated compliance checks against multiple trusted data sources:
+
+* **NEAR Intents AML Portal** 
+</code></pre>
+<aside class="onebox allowlistedgeneric" data-onebox-src="https://aml.near-intents.org/auth/login">
+  <header class="source">
+      <img src="https://global.discourse-cdn.com/zcash/original/3X/b/b/bb12b1d02333f961bb3268f9fa9e4becdd9cace3.png" class="site-icon" alt="" data-dominant-color="2B2B2B" width="256" height="256">
+
+      <a href="https://aml.near-intents.org/auth/login" target="_blank" rel="noopener">aml.near-intents.org</a>
+  </header>
+
+  <article class="onebox-body">
+    
+
+<h3><a href="https://aml.near-intents.org/auth/login" target="_blank" rel="noopener">Near Intents AML Portal</a></h3>
+
+
+
+  </article>
+
+  <div class="onebox-metadata">
+    
+    
+  </div>
+
+  <div style="clear: both"></div>
+</aside>
+
+<pre><code class="lang-auto">* **Binance AML**
+
+* **AMLBot &amp; PureFi** 
+</code></pre>
+<ol start="2">
+<li>Enhanced screening for 1Click Swap API non-dry quote requests</li>
+</ol>
+<pre><code class="lang-auto">In addition to the above, all non-dry quote requests are screened against [TRM Labs](https://www.trmlabs.com/)
+
+datasets. At present, we automatically block quote issuance for any address that TRM Labs flags with:
+
+* Sanctions (with `riskType: OWNERSHIP`)
+
+* Blocking behavior
+
+When a match is detected, the quote request is immediately rejected, and the corresponding user or distribution channel receives a clear response that the quote has been blocked. This ensures that potentially tainted flows are contained at the very first interaction point.
+</code></pre>
+<p>My favorite  is <code>riskType: OWNERSHIP</code> <img src="https://emoji.discourse-cdn.com/twitter/grin.png?v=15" title=":grin:" class="emoji" alt=":grin:" loading="lazy" width="20" height="20"></p>
+<p>Anyhow, I understand there may be compliance considerations, but I think the retroactive grants funders might want to think about how this aligns with the the ideas of censorship resistance and privacy in the Zcash project. Would you <a class="mention" href="/u/blippitty">@blippitty</a> like to comment on this?</p>
+<p>I personally would like to know how a user might find this information in-app, without looking for something like this on a website. I’m not familiar with the system, so, genuine question - are Zcash users or swappers notified of screenings from professional blockchain analysis companies like TRM Labs, or Binance AML ? More technically, what is visible to them and what information is gathered?</p>
+            </div>
+
+              <div itemprop="interactionStatistic" itemscope="itemscope" itemtype="http://schema.org/InteractionCounter">
+                  <meta itemprop="interactionType" content="http://schema.org/LikeAction"/>
+                  <meta itemprop="userInteractionCount" content="2" />
+                <span class='post-likes'>2 Likes</span>
+              </div>
+
+
+            
+
+
+          </div>
+          <div id='post_6' itemprop="comment" itemscope="itemscope" itemtype="http://schema.org/Comment" class='topic-body crawler-post'>
+            <div class='crawler-post-meta'>
+              <span class="creator" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <a rel='nofollow' href='https://forum.zcashcommunity.com/u/zancas'><span itemprop="name">zancas</span></a>
+                  <meta itemprop='url' content='https://forum.zcashcommunity.com/u/zancas'>
+                
+              </span>
+
+
+
+              <span class="crawler-post-infos">
+                  <time itemprop="datePublished" datetime='2026-02-07T06:36:46Z' class='post-time'>
+                    February 7, 2026,  6:36am
+                  </time>
+                  <meta itemprop='dateModified' content='2026-02-07T06:36:46Z'>
+              <span itemprop="position">6</span>
+              </span>
+            </div>
+            <div class='post' itemprop="text">
+              <p>How do you get the 1/2 number?   I thought NEAR offered shielded addresses?</p>
+            </div>
+
+              <div itemprop="interactionStatistic" itemscope="itemscope" itemtype="http://schema.org/InteractionCounter">
+                  <meta itemprop="interactionType" content="http://schema.org/LikeAction"/>
+                  <meta itemprop="userInteractionCount" content="0" />
+                <span class='post-likes'></span>
+              </div>
+
+
+            
+
+
+          </div>
+          <div id='post_7' itemprop="comment" itemscope="itemscope" itemtype="http://schema.org/Comment" class='topic-body crawler-post'>
+            <div class='crawler-post-meta'>
+              <span class="creator" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <a rel='nofollow' href='https://forum.zcashcommunity.com/u/emersonian'><span itemprop="name">emersonian</span></a>
+                  <meta itemprop='url' content='https://forum.zcashcommunity.com/u/emersonian'>
+                
+              </span>
+
+
+
+              <span class="crawler-post-infos">
+                  <time itemprop="datePublished" datetime='2026-02-07T14:36:51Z' class='post-time'>
+                    February 7, 2026,  2:36pm
+                  </time>
+                  <meta itemprop='dateModified' content='2026-02-07T14:36:51Z'>
+              <span itemprop="position">7</span>
+              </span>
+            </div>
+            <div class='post' itemprop="text">
+              <aside class="quote no-group" data-username="blippitty" data-post="3" data-topic="54588">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" width="24" height="24" src="https://sea2.discourse-cdn.com/zcash/user_avatar/forum.zcashcommunity.com/blippitty/48/43010_2.png" class="avatar"> blippitty:</div>
+<blockquote>
+<p>Regarding the profits, only the Intents frontend has fees and to date has made &lt;$50k.</p>
+</blockquote>
+</aside>
+<p>That’s surprising. What’s the best way to verify this, is there an open source dashboard? Dune?</p>
+<aside class="quote no-group" data-username="aaal" data-post="5" data-topic="54588">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" width="24" height="24" src="https://sea2.discourse-cdn.com/zcash/user_avatar/forum.zcashcommunity.com/aaal/48/36133_2.png" class="avatar"> aaal:</div>
+<blockquote>
+<p><code>Every quote request undergoes automated compliance checks against multiple trusted data sources:</code></p>
+</blockquote>
+</aside>
+<p>I asked NEAR a few pointed questions about this at Zeboot and was mostly satisfied with their responses, but due to confidentiality rules I’m not sure if I can share.</p>
+<p>Even if no user IPs are shared with AML providers, the moment that NEAR Intents sends them an address to screen, you better believe that the provider will log that address forever and tag it as “NEAR User”. Arguably that doesn’t matter much for users that did ultimately send funds into NEAR for a swap, but for the users that looked up a swap quote and decided not to swap, that’s a privacy leak.</p>
+<p>NEAR: What is the entirety of information shared with AML providers? Are user IPs, user agents, or affiliate IDs shared with AML providers at any point? (identifying, for example, which 1click deposit address is held by a Zashi user) Can you open source that part of your code for us to take a look at?</p>
+<p>Regarding shielded/orchard support, I have never seen an orchard deposit address. What do you mean by orchard support?</p>
+<p>I have only seen:</p>
+<ol>
+<li>Transparent addresses in the NEAR Intents user interface for user deposits.</li>
+<li>Transparent addresses in the 1click API responses (perhaps you updated this)</li>
+<li>Transparent addresses holding liquidity in NEAR validators’ TSS vaults</li>
+</ol>
+<p>Can we get clarity on which of the above support orchard, or where exactly in your stack orchard is supported?</p>
+<p>AFAIK true Orchard support would require that NEAR validators move to FROST instead of using TSS.</p>
+<p>I want to caution everyone to what we should flag as <strong>“traceable orchard”</strong> support across our community. When is an orchard transaction traceable? When someone deposits into Orchard with an exact amount, then withdraws from Orchard that same nearly-exact amount. Especially if the withdraw happens soon after the deposit.</p>
+<p>To a new dev in our ecosystem, the easiest way to support orchard is to allow users to deposit into an orchard address, then immediately transfer those funds out into a transparent address. That’s almost as good as not using orchard as all, it’s very very traceable.</p>
+<p>When a project claims shielded support, let’s be vigilant about verifying what exactly they mean by that. The “traceable orchard” approach I define above is not entirely bad - it is a baby step towards full orchard support - and is perhaps better than nothing. But what I really don’t like about it is that users get a huge false sense of security.</p>
+<p><em>(Context: Immense tooling and understanding exists for Bitcoin addresses, which is why I strongly support Zcash transparent addresses (which are essentially BTC addresses) for developer evangelism. T-addresses got us NEAR and Maya years sooner, if ever. TSS is the technology that allows Maya and NEAR to safely store massive amounts of Zcash across multiple validators in a mostly-trustless, decentralized way. But it does not support Orchard addresses. For that you need FROST. So, transparent addresses are essential right now, and are absolutely both a feature and a bug.)</em></p>
+            </div>
+
+              <div itemprop="interactionStatistic" itemscope="itemscope" itemtype="http://schema.org/InteractionCounter">
+                  <meta itemprop="interactionType" content="http://schema.org/LikeAction"/>
+                  <meta itemprop="userInteractionCount" content="0" />
+                <span class='post-likes'></span>
+              </div>
+
+                <div class='crawler-linkback-list'>
+                    <div>
+                      <a href="https://forum.zcashcommunity.com/t/maya-protocol-advanced-shielded-zec-support-retroactive-grant/54593/4">Maya Protocol Advanced Shielded ZEC Support (Retroactive Grant)</a>
+                    </div>
+                </div>
+
+            
+
+
+          </div>
+          <div id='post_8' itemprop="comment" itemscope="itemscope" itemtype="http://schema.org/Comment" class='topic-body crawler-post'>
+            <div class='crawler-post-meta'>
+              <span class="creator" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <a rel='nofollow' href='https://forum.zcashcommunity.com/u/emersonian'><span itemprop="name">emersonian</span></a>
+                  <meta itemprop='url' content='https://forum.zcashcommunity.com/u/emersonian'>
+                
+              </span>
+
+
+
+              <span class="crawler-post-infos">
+                  <time itemprop="datePublished" datetime='2026-02-07T14:39:19Z' class='post-time'>
+                    February 7, 2026,  2:39pm
+                  </time>
+                  <meta itemprop='dateModified' content='2026-02-07T14:39:19Z'>
+              <span itemprop="position">8</span>
+              </span>
+            </div>
+            <div class='post' itemprop="text">
+              <aside class="quote no-group" data-username="zancas" data-post="6" data-topic="54588" data-full="true">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" width="24" height="24" src="https://sea2.discourse-cdn.com/zcash/user_avatar/forum.zcashcommunity.com/zancas/48/42011_2.png" class="avatar"> zancas:</div>
+<blockquote>
+<p>How do you get the 1/2 number? I thought NEAR offered shielded addresses?</p>
+</blockquote>
+</aside>
+<p>As a community member I really want both NEAR and Maya to receive sizable but fair rewards for connecting our human rights technology, Zcash, to DEX rails. Something less than $500k feels right to me, it’s roughly what I could see a startup fundraising to build a significantly-complex early product. But it’s absolutely a number I pulled out of thin air, not too dissimilar to the estimating approach used by many rejected grant applicants <img src="https://emoji.discourse-cdn.com/twitter/sweat_smile.png?v=15" title=":sweat_smile:" class="emoji" alt=":sweat_smile:" loading="lazy" width="20" height="20"> (not calling out anyone in this thread).</p>
+            </div>
+
+              <div itemprop="interactionStatistic" itemscope="itemscope" itemtype="http://schema.org/InteractionCounter">
+                  <meta itemprop="interactionType" content="http://schema.org/LikeAction"/>
+                  <meta itemprop="userInteractionCount" content="0" />
+                <span class='post-likes'></span>
+              </div>
+
+
+            
+
+
+          </div>
+          <div id='post_9' itemprop="comment" itemscope="itemscope" itemtype="http://schema.org/Comment" class='topic-body crawler-post'>
+            <div class='crawler-post-meta'>
+              <span class="creator" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <a rel='nofollow' href='https://forum.zcashcommunity.com/u/decentrathai'><span itemprop="name">decentrathai</span></a>
+                  <meta itemprop='url' content='https://forum.zcashcommunity.com/u/decentrathai'>
+                
+              </span>
+
+
+
+              <span class="crawler-post-infos">
+                  <time itemprop="datePublished" datetime='2026-02-07T14:46:22Z' class='post-time'>
+                    February 7, 2026,  2:46pm
+                  </time>
+                  <meta itemprop='dateModified' content='2026-02-07T14:46:22Z'>
+              <span itemprop="position">9</span>
+              </span>
+            </div>
+            <div class='post' itemprop="text">
+              <p>Great to see infrastructure like this bringing liquidity to ZEC. Cross-chain accessibility is key for adoption.</p>
+<p>On the application layer side, we’re building ZChat - private messaging where every message is a shielded transaction on Orchard. Same zk-SNARK proofs, different use case.</p>
+<p>Infrastructure + applications = complete ecosystem. Looking forward to seeing more builders ship on Zcash!</p>
+            </div>
+
+              <div itemprop="interactionStatistic" itemscope="itemscope" itemtype="http://schema.org/InteractionCounter">
+                  <meta itemprop="interactionType" content="http://schema.org/LikeAction"/>
+                  <meta itemprop="userInteractionCount" content="1" />
+                <span class='post-likes'>1 Like</span>
+              </div>
+
+
+            
+
+
+          </div>
+          <div id='post_10' itemprop="comment" itemscope="itemscope" itemtype="http://schema.org/Comment" class='topic-body crawler-post'>
+            <div class='crawler-post-meta'>
+              <span class="creator" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <a rel='nofollow' href='https://forum.zcashcommunity.com/u/hanh'><span itemprop="name">hanh</span></a>
+                  <meta itemprop='url' content='https://forum.zcashcommunity.com/u/hanh'>
+                
+              </span>
+
+
+
+              <span class="crawler-post-infos">
+                  <time itemprop="datePublished" datetime='2026-02-08T11:41:46Z' class='post-time'>
+                    February 8, 2026, 11:41am
+                  </time>
+                  <meta itemprop='dateModified' content='2026-02-08T11:41:46Z'>
+              <span itemprop="position">10</span>
+              </span>
+            </div>
+            <div class='post' itemprop="text">
+              <aside class="quote no-group" data-username="pacu" data-post="4" data-topic="54588">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" width="24" height="24" src="https://sea2.discourse-cdn.com/zcash/user_avatar/forum.zcashcommunity.com/pacu/48/15383_2.png" class="avatar"> pacu:</div>
+<blockquote>
+<p>I use NEAR and I think it’s great. I still I’m surprised and somewhat skeptical of/confused by the figure <a class="mention" href="/u/blippitty">@blippitty</a> is reporting while we learned that Zashi made profits in the order of millions.</p>
+</blockquote>
+</aside>
+<p>FYI, Zashi includes an app fee of 50 bps. Not sure how much of an impact this has though.</p>
+<aside class="onebox githubblob" data-onebox-src="https://github.com/Electric-Coin-Company/zashi-ios/blob/2488b26607be5e1361c19ca2199de6eefe10bad5/modules/Sources/Dependencies/SwapAndPay/SwapAndPayInterface.swift#L26">
+  <header class="source">
+
+      <a href="https://github.com/Electric-Coin-Company/zashi-ios/blob/2488b26607be5e1361c19ca2199de6eefe10bad5/modules/Sources/Dependencies/SwapAndPay/SwapAndPayInterface.swift#L26" target="_blank" rel="noopener nofollow ugc">github.com/Electric-Coin-Company/zashi-ios</a>
+  </header>
+
+  <article class="onebox-body">
+    <h4><a href="https://github.com/Electric-Coin-Company/zashi-ios/blob/2488b26607be5e1361c19ca2199de6eefe10bad5/modules/Sources/Dependencies/SwapAndPay/SwapAndPayInterface.swift#L26" target="_blank" rel="noopener nofollow ugc">modules/Sources/Dependencies/SwapAndPay/SwapAndPayInterface.swift</a></h4>
+
+<div class="git-blob-info">
+  <a href="https://github.com/Electric-Coin-Company/zashi-ios/blob/2488b26607be5e1361c19ca2199de6eefe10bad5/modules/Sources/Dependencies/SwapAndPay/SwapAndPayInterface.swift#L26" rel="noopener nofollow ugc"><code>2488b2660</code></a>
+</div>
+
+
+
+    <pre class="onebox"><code class="lang-swift">
+      <ol class="start lines" start="16" style="counter-reset: li-counter 15 ;">
+          <li>}</li>
+          <li></li>
+          <li>@DependencyClient</li>
+          <li>public struct SwapAndPayClient {</li>
+          <li>    public enum EndpointError: Equatable, Error {</li>
+          <li>        case message(String)</li>
+          <li>    }</li>
+          <li>    </li>
+          <li>    public enum Constants {</li>
+          <li>        /// Affiliate fee in basis points</li>
+          <li class="selected">        static public let zashiFeeBps = 50</li>
+          <li>        /// Address for the affiliate fees</li>
+          <li>        static let affiliateFeeDepositAddress = "electriccoinco.near"</li>
+          <li>        /// Address for the affiliate fees for CrossPay</li>
+          <li>        static let affiliateCrossPayFeeDepositAddress = "crosspay.near"</li>
+          <li>    }</li>
+          <li>    </li>
+          <li>    public let submitDepositTxId: (String, String) async throws -&gt; Void</li>
+          <li>    public let swapAssets: () async throws -&gt; IdentifiedArrayOf&lt;SwapAsset&gt;</li>
+          <li>    public let quote: (Bool, Bool, Bool, Int, SwapAsset, SwapAsset, String, String, String) async throws -&gt; SwapQuote</li>
+          <li>    public let status: (String, Bool) async throws -&gt; SwapDetails</li>
+      </ol>
+    </code></pre>
+
+
+
+  </article>
+
+  <div class="onebox-metadata">
+    
+    
+  </div>
+
+  <div style="clear: both"></div>
+</aside>
+
+            </div>
+
+              <div itemprop="interactionStatistic" itemscope="itemscope" itemtype="http://schema.org/InteractionCounter">
+                  <meta itemprop="interactionType" content="http://schema.org/LikeAction"/>
+                  <meta itemprop="userInteractionCount" content="5" />
+                <span class='post-likes'>5 Likes</span>
+              </div>
+
+
+            
+
+
+          </div>
+          <div id='post_11' itemprop="comment" itemscope="itemscope" itemtype="http://schema.org/Comment" class='topic-body crawler-post'>
+            <div class='crawler-post-meta'>
+              <span class="creator" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <a rel='nofollow' href='https://forum.zcashcommunity.com/u/chronear'><span itemprop="name">chronear</span></a>
+                  <meta itemprop='url' content='https://forum.zcashcommunity.com/u/chronear'>
+                
+              </span>
+
+
+
+              <span class="crawler-post-infos">
+                  <time itemprop="datePublished" datetime='2026-02-20T20:00:20Z' class='post-time'>
+                    February 20, 2026,  8:00pm
+                  </time>
+                  <meta itemprop='dateModified' content='2026-02-20T20:05:37Z'>
+              <span itemprop="position">11</span>
+              </span>
+            </div>
+            <div class='post' itemprop="text">
+              <p>Hi everyone, thank you for the thoughtful engagement and for all the support till date. The NEAR Intents team is committed to scaling Zcash adoption and we will always be strong advocates fervently championing the ZEC ecosystem but after some internal deliberations, we have decided to retract this NEAR Intents grant proposal. We strongly believe that the best way to align incentives is to build great products that solve hard problems which people do not mind paying for and we are confident, that as we get more informed and explore monetisation opportunities for NEAR Intents-based products, we will not require grants to subsidise the engineering efforts.</p>
+<p>Further context that hopefully answers some of the questions, NEAR Intents currently does not have any protocol fees and only the <a href="http://app.near-intents.org" rel="noopener nofollow ugc">app.near-intents.org</a> frontend has fees implemented. We rolled out the fees on the frontend a few weeks ago hence the numbers may look surprisingly low. That said, we do plan to turn on the fee switch for flows broadly on NEAR Intents and this goes into effect next week onwards. Refer <a href="https://x.com/near_intents/status/2023776935546093632?s=20" rel="noopener nofollow ugc">here</a>.</p>
+<p>We are excited to see teams like ZODL (fka Zashi), Infinex, THORswap, THORwallet, Rhea, Templar and more continue to leverage NEAR Intents to not only support flows into the Zcash ecosystem but also expose the ZEC asset to communities who have historically had no way to acquire ZEC on-chain.</p>
+<p>Another important thing to note for general awareness is that NEAR Intents is not just another DEX, we are building the universal liquidity layer for all assets and trading types and already have use cases like lending and DCA built on NEAR Intents for ZEC by independent teams. We’ve also bridged ZEC to Solana and plan to make it accessible via our Omnibridge network to even more chains. We’ve enabled hundreds of millions of dollars to flow seamlessly into Zcash (track it real time on the NEAR Intents explorer) and we only expect to reach more scale as we unveil more products in the coming months.</p>
+<p><strong>ZENEAR</strong></p>
+            </div>
+
+              <div itemprop="interactionStatistic" itemscope="itemscope" itemtype="http://schema.org/InteractionCounter">
+                  <meta itemprop="interactionType" content="http://schema.org/LikeAction"/>
+                  <meta itemprop="userInteractionCount" content="7" />
+                <span class='post-likes'>7 Likes</span>
+              </div>
+
+
+            
+
+
+          </div>
+          <div id='post_12' itemprop="comment" itemscope="itemscope" itemtype="http://schema.org/Comment" class='topic-body crawler-post'>
+            <div class='crawler-post-meta'>
+              <span class="creator" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <a rel='nofollow' href='https://forum.zcashcommunity.com/u/aaal'><span itemprop="name">aaal</span></a>
+                  <meta itemprop='url' content='https://forum.zcashcommunity.com/u/aaal'>
+                
+              </span>
+
+
+
+              <span class="crawler-post-infos">
+                  <time itemprop="datePublished" datetime='2026-02-20T23:29:15Z' class='post-time'>
+                    February 20, 2026, 11:29pm
+                  </time>
+                  <meta itemprop='dateModified' content='2026-02-20T23:29:15Z'>
+              <span itemprop="position">12</span>
+              </span>
+            </div>
+            <div class='post' itemprop="text">
+              <aside class="quote no-group quote-modified" data-username="aaal" data-post="5" data-topic="54588">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" width="24" height="24" src="https://sea2.discourse-cdn.com/zcash/user_avatar/forum.zcashcommunity.com/aaal/48/36133_2.png" class="avatar"> aaal:</div>
+<blockquote>
+<pre><code class="lang-auto">Every quote request undergoes automated compliance checks against multiple trusted data sources:
+
+* **NEAR Intents AML Portal** 
+* **Binance AML**
+* **AMLBot &amp; PureFi** 
+
+</code></pre>
+</blockquote>
+</aside>
+<aside class="quote no-group quote-modified" data-username="aaal" data-post="5" data-topic="54588">
+<div class="title">
+<div class="quote-controls"></div>
+<img alt="" width="24" height="24" src="https://sea2.discourse-cdn.com/zcash/user_avatar/forum.zcashcommunity.com/aaal/48/36133_2.png" class="avatar"> aaal:</div>
+<blockquote>
+<p>[are] Zcash users or swappers notified of screenings from professional blockchain analysis companies like TRM Labs, or Binance AML ? More technically, what is visible to them and what information is gathered?</p>
+</blockquote>
+</aside>
+<p><a class="mention" href="/u/blippitty">@blippitty</a> <a class="mention" href="/u/chronear">@chronear</a><br>
+No comment on these? Your users and potential users might be interested, even if you’re not seeking retroactive grants any longer.</p>
+            </div>
+
+              <div itemprop="interactionStatistic" itemscope="itemscope" itemtype="http://schema.org/InteractionCounter">
+                  <meta itemprop="interactionType" content="http://schema.org/LikeAction"/>
+                  <meta itemprop="userInteractionCount" content="2" />
+                <span class='post-likes'>2 Likes</span>
+              </div>
+
+
+            
+
+
+          </div>
+
+    </div>
+
+
+    <div id="related-topics" class="more-topics__list " role="complementary" aria-labelledby="related-topics-title">
+  <h3 id="related-topics-title" class="more-topics__list-title">
+    Related topics
+  </h3>
+  <div class="topic-list-container" itemscope itemtype='http://schema.org/ItemList'>
+    <meta itemprop='itemListOrder' content='http://schema.org/ItemListOrderDescending'>
+    <table class='topic-list'>
+      <thead>
+        <tr>
+          <th>Topic</th>
+          <th></th>
+          <th class="replies">Replies</th>
+          <th class="views">Views</th>
+          <th>Activity</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="topic-list-item" id="topic-list-item-50288">
+            <td class="main-link" itemprop='itemListElement' itemscope itemtype='http://schema.org/ListItem'>
+              <meta itemprop='position' content='1'>
+              <span class="link-top-line">
+                <a itemprop='url' href='https://forum.zcashcommunity.com/t/zcash-near-permissionless-cross-chain-swaps/50288' class='title raw-link raw-topic-link'>Zcash + NEAR: Permissionless Cross-Chain Swaps</a>
+              </span>
+              <div class="link-bottom-line">
+                  <a href='/c/general/18' class='badge-wrapper bullet'>
+                    <span class='badge-category-bg' style='background-color: #f4b76c'></span>
+                    <span class='badge-category clear-badge'>
+                      <span class='category-name'>General</span>
+                    </span>
+                  </a>
+                  <div class="discourse-tags">
+                  </div>
+              </div>
+            </td>
+            <td class="replies">
+              <span class='posts' title='posts'>68</span>
+            </td>
+            <td class="views">
+              <span class='views' title='views'>4751</span>
+            </td>
+            <td>
+              August 11, 2025
+            </td>
+          </tr>
+          <tr class="topic-list-item" id="topic-list-item-54032">
+            <td class="main-link" itemprop='itemListElement' itemscope itemtype='http://schema.org/ListItem'>
+              <meta itemprop='position' content='2'>
+              <span class="link-top-line">
+                <a itemprop='url' href='https://forum.zcashcommunity.com/t/proposal-for-a-grant-to-build-privacy-bridge-a-defi-platform-for-zcash-users/54032' class='title raw-link raw-topic-link'>Proposal for a grant to build Privacy bridge: A Defi Platform for Zcash Users</a>
+              </span>
+              <div class="link-bottom-line">
+                  <a href='/c/grants/applications/36' class='badge-wrapper bullet'>
+                    <span class='badge-category-bg' style='background-color: #9EB83B'></span>
+                    <span class='badge-category clear-badge'>
+                      <span class='category-name'>Applications</span>
+                    </span>
+                  </a>
+                  <div class="discourse-tags">
+                  </div>
+              </div>
+            </td>
+            <td class="replies">
+              <span class='posts' title='posts'>1</span>
+            </td>
+            <td class="views">
+              <span class='views' title='views'>169</span>
+            </td>
+            <td>
+              January 5, 2026
+            </td>
+          </tr>
+          <tr class="topic-list-item" id="topic-list-item-54737">
+            <td class="main-link" itemprop='itemListElement' itemscope itemtype='http://schema.org/ListItem'>
+              <meta itemprop='position' content='3'>
+              <span class="link-top-line">
+                <a itemprop='url' href='https://forum.zcashcommunity.com/t/zcash-community-grants-meeting-minutes-2-16-26/54737' class='title raw-link raw-topic-link'>Zcash Community Grants Meeting Minutes 2/16/26</a>
+              </span>
+              <div class="link-bottom-line">
+                  <a href='/c/grants/zomg-updates/34' class='badge-wrapper bullet'>
+                    <span class='badge-category-bg' style='background-color: #652D90'></span>
+                    <span class='badge-category clear-badge'>
+                      <span class='category-name'>Community Grants Updates</span>
+                    </span>
+                  </a>
+                  <div class="discourse-tags">
+                  </div>
+              </div>
+            </td>
+            <td class="replies">
+              <span class='posts' title='posts'>1</span>
+            </td>
+            <td class="views">
+              <span class='views' title='views'>243</span>
+            </td>
+            <td>
+              February 23, 2026
+            </td>
+          </tr>
+          <tr class="topic-list-item" id="topic-list-item-55328">
+            <td class="main-link" itemprop='itemListElement' itemscope itemtype='http://schema.org/ListItem'>
+              <meta itemprop='position' content='4'>
+              <span class="link-top-line">
+                <a itemprop='url' href='https://forum.zcashcommunity.com/t/coinholder-directed-retroactive-grants-program-q2-2026-now-accepting-proposals/55328' class='title raw-link raw-topic-link'>Coinholder-Directed Retroactive Grants Program Q2 2026 - Now Accepting Proposals</a>
+              </span>
+              <div class="link-bottom-line">
+                  <a href='/c/grants/retroactive-grants/54' class='badge-wrapper bullet'>
+                    <span class='badge-category-bg' style='background-color: #652D90'></span>
+                    <span class='badge-category clear-badge'>
+                      <span class='category-name'>Retroactive Grants</span>
+                    </span>
+                  </a>
+                  <div class="discourse-tags">
+                  </div>
+              </div>
+            </td>
+            <td class="replies">
+              <span class='posts' title='posts'>8</span>
+            </td>
+            <td class="views">
+              <span class='views' title='views'>583</span>
+            </td>
+            <td>
+              May 15, 2026
+            </td>
+          </tr>
+          <tr class="topic-list-item" id="topic-list-item-52189">
+            <td class="main-link" itemprop='itemListElement' itemscope itemtype='http://schema.org/ListItem'>
+              <meta itemprop='position' content='5'>
+              <span class="link-top-line">
+                <a itemprop='url' href='https://forum.zcashcommunity.com/t/private-cross-chain-payments-with-zashi-crosspay/52189' class='title raw-link raw-topic-link'>Private Cross-Chain Payments with Zashi CrossPay</a>
+              </span>
+              <div class="link-bottom-line">
+                  <a href='/c/zcash-apps/zodl/51' class='badge-wrapper bullet'>
+                    <span class='badge-category-bg' style='background-color: #4f2731'></span>
+                    <span class='badge-category clear-badge'>
+                      <span class='category-name'>Zodl</span>
+                    </span>
+                  </a>
+                  <div class="discourse-tags">
+                  </div>
+              </div>
+            </td>
+            <td class="replies">
+              <span class='posts' title='posts'>45</span>
+            </td>
+            <td class="views">
+              <span class='views' title='views'>2196</span>
+            </td>
+            <td>
+              November 12, 2025
+            </td>
+          </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+
+
+    </div>
+    <footer class="container wrap">
+  <nav class='crawler-nav'>
+    <ul>
+      <li itemscope itemtype='http://schema.org/SiteNavigationElement'>
+        <span itemprop='name'>
+          <a href='/' itemprop="url">Home </a>
+        </span>
+      </li>
+      <li itemscope itemtype='http://schema.org/SiteNavigationElement'>
+        <span itemprop='name'>
+          <a href='/categories' itemprop="url">Categories </a>
+        </span>
+      </li>
+      <li itemscope itemtype='http://schema.org/SiteNavigationElement'>
+        <span itemprop='name'>
+          <a href='/guidelines' itemprop="url">Guidelines </a>
+        </span>
+      </li>
+        <li itemscope itemtype='http://schema.org/SiteNavigationElement'>
+          <span itemprop='name'>
+            <a href='/tos' itemprop="url">Terms of Service </a>
+          </span>
+        </li>
+        <li itemscope itemtype='http://schema.org/SiteNavigationElement'>
+          <span itemprop='name'>
+            <a href='/privacy' itemprop="url">Privacy Policy </a>
+          </span>
+        </li>
+    </ul>
+  </nav>
+  <p class='powered-by-link'>Powered by <a href="https://www.discourse.org">Discourse</a>, best viewed with JavaScript enabled</p>
+</footer>
+
+    
+    
+  </body>
+  
+</html>

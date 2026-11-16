@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>CCS - ETH-XMR Atomic Swap Development</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/meta/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/meta/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/meta/favicon-16x16.png">
+        <link rel="manifest" href="/meta/manifest.json">
+        <link rel="mask-icon" href="/meta/safari-pinned-tab.svg" color="#5bbad5">
+        <meta name="theme-color" content="#ffffff">
+
+    <link href="/css/custom.css" rel="stylesheet">
+
+    
+    <meta name="msapplication-config" content="/ietemplates/ieconfig.xml">
+
+  </head>
+
+
+  <body>
+    <div class="page-wrapper">
+          
+<div class="mob-nav">
+              <input class="burger-check" id="mobile-burger" type="checkbox"><label for="mobile-burger" class="burger"></label>
+           
+        <div class="slide-in-nav">
+             <div class="container slide-in">
+                 <div class="row">
+                     <div class="col-xs-12"> 
+                         <div class="text-center nav-item mob">
+                            <a href="/ideas/" class="top-link">Ideas</a>
+                         </div>
+                         <div class="text-center nav-item mob">
+                            <a href="/funding-required/">Funding Required</a>
+                         </div>
+                         <div class="text-center nav-item mob">
+                            <a href="/work-in-progress/">Work in Progress</a>
+                         </div>
+                         <div class="text-center nav-item mob">
+                            <a href="/completed-proposals/">Completed Tasks</a>
+                         </div>
+                         <div class="text-center nav-item mob">
+                            <a href="/donate/index.html">Donate</a>
+                         </div>
+                         <div class="text-center nav-item mob">
+                            <a href="https://getmonero.org">Back to Getmonero.org</a>
+                         </div>
+                     </div>                     
+                 </div>          
+             </div>
+          
+        </div>
+       </div>
+       
+        <div class="desktop-nav">
+           <nav class="container">
+              <div class="row middle-xs">
+                  <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                    <p class="site-name"><a href="/">Community Crowdfunding System</a></p>
+                  </div>
+                  <div class="col-lg-8 col-md-8 col-sm-8 items end-xs">
+                      <div class="row end-xs middle-xs">
+                         <div class="col-md-12">
+                            <div class="dropdown">
+                                <label for="desktopdrop">CCS Stages<div class="arrow-down"></div></label>
+                                <input class="burger-checkdropdown" id="desktopdrop" type="checkbox">
+                                <div class="dropdown-content">
+                                      <a href="/ideas/">Ideas</a>
+                                      <a href="/funding-required/">Funding Required</a>
+                                      <a href="/work-in-progress/">Work in Progress</a>
+                                      <a href="/completed-proposals/">Completed Tasks</a>
+                                </div>
+                            </div>  
+                            <a href="https://getmonero.org">Getmonero.org</a>
+                            <a href="/donate/" class="donate-btn">Donate</a>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+        </nav>
+        </div>
+        <div class="mob bot-nav white-nav">
+            <div class="row middle-xs">
+                <div class="col-xs-12">
+                    <p class="site-name"><a href="
+                    
+                    /
+                    
+                    ">Community Crowdfunding System</a></p>
+                </div>
+            </div>     
+        </div>    
+
+        <div class="site-wrap ffs-proposal ffs-cp">
+
+<div class="container ffs-breadcrumbs">
+   <div class="row">
+      <div class="col-xs-12">
+          <p><a href="/">Community Crowdfunding System</a></p>
+          <p><a href="/completed-proposals/">Completed Tasks</a></p>
+        <p class="bread-active">ETH-XMR Atomic Swap Development</p>
+      </div>
+   </div>
+</div>    
+            <section class="container full">
+                <div class="info-block">
+                   <div class="row">
+                        <div class="col-xs-12">
+                           
+                             
+                                
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            <h2>ETH-XMR Atomic Swap Development</h2>
+                                <p class="author-list">by noot</p>
+                                <p class="date-list">December 4, 2021</p>
+                                <p class="progress-number-goal">56 XMR</p>
+                                <p class="date-list contributor">31 contributors</p>
+                                <p class="bar-work-status">Completed</p> 
+                            <div class="progress-bar">
+                                <span class="work-progress" style="width: 100%; background-color: #70af71;"></span>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+        </section>
+                   
+        <section class="container full">
+                <div class="">
+                    <div class="row between-xs">
+                       <div class="col-xs-12">
+                            <div class="tabs">
+                                  <input class="input" name="tabs" type="radio" id="tab-1" checked="checked"/>
+                                  <label class="label" for="tab-1">Proposal</label>
+                                  <div class="panel col-xs-12">
+                                       <div class="panel-segment">
+                                           <h1 id="summary">Summary</h1>
+
+<p>This proposal is for the continued development of ETH-XMR atomic swaps. The milestones include continued maintence and testing of the current codebase, gas improvements, network and integration testing, and documentation. At the completion of this proposal, there will be an audit-ready pre-production release of the ETH-XMR atomic swap software, as well as a pre-print paper outlining future improvements to the protocol. The total estimated duration of this proposal is 16 weeks.</p>
+
+<h1 id="team">Team</h1>
+
+<p><a href="github.com/noot">noot</a> will be completing milestones 1-6. Milestone 7 will be completed by <a href="https://github.com/Tbaut">Tbaut</a>.</p>
+
+<h3 id="about-me-noot">About me (noot)</h3>
+
+<p>Since I'm quite new to the Monero space, I figured I'd post a little bit about me here. I've been working as a professional blockchain protocol engineer for nearly 4 years (will be 4 years in March 2022). I also have a Bachelor's of Applied Science specializing in Computer Engineering from the University of Toronto. For my undergraduate thesis project, I explored adding privacy to Ethereum, which ended up with me writing a Go implementation of RingCT. Although the project didn't really go anywhere, it was my introduction to real-life cryptography and of course Monero. Since then I've been casually following Monero. I've always loved the tech and the ethos and I'm glad to finally be able to contribute to it!</p>
+
+<p>I'm passionate about privacy-preserving technologies and I think Monero really is the best and only (afaik) cryptocurrency that's truly private. I hope this project will bring more users to Monero by reducing the onboarding overhead, specifically by not needing to rely on a centralized exchange. I hope this work, along with the current inspiring XMR-BTC swap work being done, will help bring in fully decentralized, peer-to-peer exchanges.</p>
+
+<p>Most of my past work is focused on alternative blockchain protocol implementations, including implementations for Polkadot and Filecoin. I've also worked on Ethermint (EVM Cosmos module), a <em>little</em> bit on some ETH2 libraries, and written/tested various smart contracts in my day, which consists of most of my Ethereum experience. I've also worked on go-libp2p-noise (a handshake protocol for the p2p library libp2p) and go-schorrkel (schnorr signatures over ristretto255, used in Polkadot), both of which are now in production! The language I've used the most is Go (namely why this project is in Go), but I've also used Rust, JS, and Solidity.</p>
+
+<p>Since I'll be continuing to work full-time, this project will be done on a part-time basis. As of writing I'm the only person who will be working on this. I estimate I'll be able to put in ~15 hours per week, which might vary week-to-week depending on how busy I am.</p>
+
+<h1 id="motivation">Motivation</h1>
+
+<p>Atomic swaps are a method for trustlessly exchanging funds across blockchains. An ETH-XMR atomic swap will allow for users to, in a trustless and completely decentralized manner, exchange Ether for Monero. This connects the leading smart contract blockchain (and the home of defi) with the leading privacy-preserving blockchain. Along with the BTC-XMR atomic swaps, this will allow for completely decentralized cross-chain exchanges to be built that allow for XMR swaps.</p>
+
+<h1 id="milestones">Milestones</h1>
+
+<h2 id="1-maintenance-of-existing-codebase-estimated-2-weeks">1. Maintenance of existing codebase (estimated 2 weeks)</h2>
+<p>This includes:</p>
+<ul>
+  <li>improved unit tests, &gt;70% test coverage for whole repo</li>
+  <li>inline documentation (ie. code-level docs)</li>
+  <li>JSON-RPC API documentation</li>
+  <li>general code cleanup</li>
+</ul>
+
+<h2 id="2-swap-contract-improvements-estimated-2-weeks">2. Swap contract improvements (estimated 2 weeks)</h2>
+<p>There is already a smart contract (Swap.sol) that implements the Ethereum on-chain side of the protocol. However, to reduce gas costs, this can be turned into a "factory" style contract that allows users to create swap instances without having to re-deploy a contract, thus allowing for gas savings.</p>
+
+<p>This milestone includes:</p>
+<ul>
+  <li>Creation of swap factory contract</li>
+  <li>Testing and integration of contract with codebase</li>
+  <li>Documentation on how to deploy the swap contract ot any EVM-based chain and interact with it</li>
+</ul>
+
+<h2 id="3-dleq-integration-estimated-2-4-weeks">3. DLEq integration (estimated 2-4 weeks)</h2>
+<p>For background, monero uses the ed25519 elliptic curve and ethereum uses the secp256k1 elliptic curve. The current implementation of the protocol verifies that a secret corresponds to a valid public key on the ed25519 curve by performing an elliptic curve multiplication (ECMUL). There is a version of the protocol that allows for massive gas savings (~30x improvement on Claim/Refund calls) by moving some of the computation off-chain. This is achieved by allowing secp256k1 keys to be verified on-chain (instead of ed25519), while off-chain, a DLEq proof is passed by each party to the counterparty that proves that their secret corresponds to public keys on both the secp256k1 curve and the ed25519 curve.</p>
+
+<p>This milestone includes:</p>
+<ul>
+  <li>Completion of the DLEq version of the swap contract, which performs a secp256k1 ECMUL as the verification step</li>
+  <li>Testing of the contract</li>
+  <li>DLEq proof generation and verification
+    <ul>
+      <li>either using an existing Rust library, potentially using CGO to create language bindings from Rust-&gt;Go</li>
+      <li>or, creating a Go implementation of DLEq proof and verification</li>
+    </ul>
+  </li>
+  <li>Integration with the codebase (updates of network messages and handling of protocol steps)</li>
+</ul>
+
+<p>A potential alternative to using an existing Rust library is to write a DLEq implementation in Go. This would be preferred in the long run as it will be easier for users to build (as they would only been one language installed) and usage of CGO can cause linking issues during build on different platforms. As well as a developer, it's easier to maintain. I would prefer to create a Go implementation for the aforementioned reasons, although it would take longer than using an existing library. However, in the long run, I believe it would save developer hours.</p>
+
+<h2 id="4-integration-testing-estimated-2-weeks">4. Integration testing (estimated 2 weeks)</h2>
+<p>This includes:</p>
+<ul>
+  <li>End-to-end testing of the swap from both parties's point of view and for all possible claim/refund cases.</li>
+  <li>Will be in the form of Go test cases.</li>
+</ul>
+
+<h2 id="5-network-testing-and-infrastructure-estimated-3-weeks">5. Network testing and infrastructure (estimated 3 weeks)</h2>
+<p>This includes:</p>
+<ul>
+  <li>setting up infrastructure (servers) to host swap nodes</li>
+  <li>testing of a larger network of swap nodes (10+ nodes) that has many swap providers</li>
+  <li>testing of node discovery, messaging, and swap initiation</li>
+  <li>testing script to allow for the above cases to be run against a network</li>
+</ul>
+
+<p>As there will likely be issues that are uncovered while testing, this milestone is assumed to include fixes for those issues.</p>
+
+<h2 id="6-additional-research-and-pre-print-paper-estimated-2-4-weeks">6. Additional research and pre-print paper (estimated 2-4 weeks)</h2>
+<p>I would like to formalize the existing swap protocol and its variations, and as well to conduct additional research into improvements to the protocol.</p>
+
+<p>This includes:</p>
+<ul>
+  <li>a pre-print paper that describes the current ETH-XMR atomic swap protocol and its security guarantees</li>
+  <li>a new version of the protocol that allows the XMR-holding party to move first, as the current protocol is limited by the ETH party needing to lock their funds first</li>
+  <li>potential optimizations to the protocol, focusing on ethereum gas costs</li>
+  <li>discussion of privacy implications on both the ethereum and monero sides</li>
+</ul>
+
+<h2 id="7-ui">7. UI</h2>
+<p>This milestone includes an in-browser UI for interacting with the swap network.</p>
+
+<p>This includes:</p>
+<ul>
+  <li>displaying the current swap offers available on the network</li>
+  <li>ability for a user to log in with a browser-based Ethereum wallet (Metamask) and take a swap offer</li>
+</ul>
+
+<h2 id="in-case-of-extra-funds">In case of extra funds</h2>
+
+<p>If there are extra funds/time left over, this will be used to investigate the following:</p>
+<ul>
+  <li>ERC20 support; ie. ability to directly swap XMR for an ERC20 token</li>
+  <li>privacy improvements on the ethereum side</li>
+  <li>tor support</li>
+</ul>
+
+<h2 id="licensing">Licensing</h2>
+
+<p>The codebase is currently licensed as GPLv3 due to usage of a library that is licensed GPLv3. However, this license can be changed after the DLEq integration (milestone 3) is complete. My preference is for GPL but I will also relicense as LGPL if needed. I would like to stick with GPL or LGPL as it prevents the code from being relicensed and used in closed-source software.</p>
+
+<h2 id="at-completion">At completion</h2>
+
+<p>At completion of this proposal, there will be a pre-production release of the software that includes binaries for Linux, MacOS and Windows.</p>
+
+<h1 id="expiration-date">Expiration date</h1>
+
+<p>This CCS will expire on February 4 2022.</p>
+
+                                           <div class="gldiscuss">
+                                               <h3>Community Discussion and Updates</h3>
+                                               <p><a href="https://repo.getmonero.org/monero-project/ccs-proposals/-/merge_requests/277">View community discussion, comments, and proposal updates on GitLab</a></p>
+                                           </div>
+                                           
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                                  
+                            
+                            
+                            
+                                       </div>
+                                  </div>
+                                  <input class="input" name="tabs" type="radio" id="tab-2"/>
+                                  <label class="label" for="tab-2">Milestones</label>
+                                  <div class="panel col-xs-12">
+                                    
+                                        
+                                           <div class="milestone panel-segment">
+                                                <span class="finished ms-finished"></span>
+                                                <h3>Maintainence of existing codebase</h3>
+                                                <p><span class="bold">To be paid:</span> 5 XMR</p>
+                                                <p><span class="bold">Completion date:</span> 5 February 2022</p>
+                                           </div>
+                                        
+                                           <div class="milestone panel-segment">
+                                                <span class="finished ms-finished"></span>
+                                                <h3>Contract improvements</h3>
+                                                <p><span class="bold">To be paid:</span> 8 XMR</p>
+                                                <p><span class="bold">Completion date:</span> 27 January 2022</p>
+                                           </div>
+                                        
+                                           <div class="milestone panel-segment">
+                                                <span class="finished ms-finished"></span>
+                                                <h3>DLEq integration</h3>
+                                                <p><span class="bold">To be paid:</span> 12 XMR</p>
+                                                <p><span class="bold">Completion date:</span> 1 May 2022</p>
+                                           </div>
+                                        
+                                           <div class="milestone panel-segment">
+                                                <span class="finished ms-finished"></span>
+                                                <h3>Integration testing</h3>
+                                                <p><span class="bold">To be paid:</span> 8 XMR</p>
+                                                <p><span class="bold">Completion date:</span> 21 March 2022</p>
+                                           </div>
+                                        
+                                           <div class="milestone panel-segment">
+                                                <span class="finished ms-finished"></span>
+                                                <h3>Network testing</h3>
+                                                <p><span class="bold">To be paid:</span> 8 XMR</p>
+                                                <p><span class="bold">Completion date:</span> 24 May 2022</p>
+                                           </div>
+                                        
+                                           <div class="milestone panel-segment">
+                                                <span class="finished ms-finished"></span>
+                                                <h3>Pre-print paper and additional research</h3>
+                                                <p><span class="bold">To be paid:</span> 5 XMR</p>
+                                                <p><span class="bold">Completion date:</span> 23 June 2022</p>
+                                           </div>
+                                        
+                                           <div class="milestone panel-segment">
+                                                <span class="finished ms-finished"></span>
+                                                <h3>UI</h3>
+                                                <p><span class="bold">To be paid:</span> 10 XMR</p>
+                                                <p><span class="bold">Completion date:</span> 23 June 2022</p>
+                                           </div>
+                                        
+                                        
+                                  </div>
+                                  <input class="input" name="tabs" type="radio" id="tab-3"/>
+                                  <label class="label" for="tab-3">Payouts</label>
+                                  <div class="panel col-xs-12">
+                                    
+                                        
+                                           <div class="milestone panel-segment">
+                                                <span class=" ms-"></span>
+                                                <p><span class="bold">Funds Awarded:</span> 8</p>
+                                                <p><span class="bold">Date:</span> 28 January 2022</p>
+                                            </div>
+                                        
+                                           <div class="milestone panel-segment">
+                                                <span class=" ms-"></span>
+                                                <p><span class="bold">Funds Awarded:</span> 5</p>
+                                                <p><span class="bold">Date:</span> 8 February 2022</p>
+                                            </div>
+                                        
+                                           <div class="milestone panel-segment">
+                                                <span class=" ms-"></span>
+                                                <p><span class="bold">Funds Awarded:</span> 8</p>
+                                                <p><span class="bold">Date:</span> 22 March 2022</p>
+                                            </div>
+                                        
+                                           <div class="milestone panel-segment">
+                                                <span class=" ms-"></span>
+                                                <p><span class="bold">Funds Awarded:</span> 20</p>
+                                                <p><span class="bold">Date:</span> 27 May 2022</p>
+                                            </div>
+                                        
+                                           <div class="milestone panel-segment">
+                                                <span class=" ms-"></span>
+                                                <p><span class="bold">Funds Awarded:</span> 5</p>
+                                                <p><span class="bold">Date:</span> 29 June 2022</p>
+                                            </div>
+                                        
+                                           <div class="milestone panel-segment">
+                                                <span class=" ms-"></span>
+                                                <p><span class="bold">Funds Awarded:</span> 10</p>
+                                                <p><span class="bold">Date:</span> 29 June 2022</p>
+                                            </div>
+                                        
+                                        
+                                  </div>
+                                </div>
+                       </div>
+                    </div>
+                </div>
+        </section>
+    </div>
+    
+
+    <footer class="container-fluid">
+            <div class="container">
+                <div class="row center-xs footer-wrapper">
+                     <div class="col-md-8 col-sm-10 col-xs-12">
+                        <h3>Donate to the Monero Project</h3>
+                        <p>By donating to the following Monero address (General Fund), you are supporting the Monero Project. If you wish to donate to a specific proposal, please see <a href="/funding-required/index.html" class="white gf">Funding Required</a>.</p>  
+                        <p><a href="monero:888tNkZrPN6JsEgekjMnABU4TBzc2Dt29EPAvkRxbANsAnjyPbb3iQ1YBRk1UXcdRsiKc9dhwMVgN5S9cQUiyoogDavup3H" class="qr"><img src="/img/donate-monero.png" /></a></p>
+                        <p class="gf-address">888tNkZrPN6JsEgekjMnABU4TBzc2Dt29EPAvkRxbANsAnjyPbb3iQ1YBRk1UXcdRsiKc9dhwMVgN5S9cQUiyoogDavup3H</p>
+                     </div>
+                </div>
+            </div>
+            <div class="row center-xs">
+                    <div class="footer-links">
+                        <ul class="list-unstyled list-inline">
+                             <li><a href="https://repo.getmonero.org/monero-project/ccs-front" class="white footer-link">CCS Front End Repo</a></li>
+                             <li><a href="https://repo.getmonero.org/monero-project/ccs-back" class="white footer-link">CCS Backend Repo</a></li>
+                             <li><a href="https://repo.getmonero.org/monero-project/ccs-proposals" class="white footer-link">CCS Proposals Repo</a></li>
+                        </ul>
+                    </div>
+            </div>
+</footer>
+
+    </div>
+  </body>
+</html>
