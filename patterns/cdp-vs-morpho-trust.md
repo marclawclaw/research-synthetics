@@ -34,9 +34,10 @@ In a CDP the protocol creates the liability. Whoever holds the stablecoin is, in
 | Fix it at deployment | Hard-coded; owner renounced | Liquity V1 (ETH only; chain: owner of TroveManager and BorrowerOperations is the zero address) | Cannot add collateral; V2 adds wstETH and rETH as separate markets in a new deployment, with separate stability pools |
 | Collective veto | Anyone proposes; token holders veto in a window | Frankencoin (see [[patterns/cdp-synthetics-landscape]] section 4b) | Plutocratic veto; trust moves to share-holders, and the minter set and position contracts were not read |
 | Governance list | A DAO or council decides each collateral and parameter | Sky/Maker (48 hour pause), crvUSD (7 day Curve DAO vote), Synthetix V2 (4-of-7 Safe, no delay) | Admin power over the whole system; the fastest to react and the largest trust surface |
-| Isolated issuance (Morpho-style) | Each collateral issues its own claim, so each holder opts in | Not surveyed | Fragmented, non-fungible stablecoin liquidity; trust returns at the market and oracle |
+| Strict isolation (Morpho-style) | Each collateral market issues its own token, so each holder opts in to one risk | Not surveyed | Fragmented, non-fungible stablecoin liquidity; trust returns at the market and oracle |
+| Loss-layer isolation | One fungible token, but each collateral type has an opt-in first-loss tranche | Liquity V2 per-collateral stability pools; Hylo xASSET holders; Frankencoin FPS as reserve (chain: `ZCHF.reserve()` is the FPS contract; first-loss role is from design docs, not re-verified) | Does not fragment the token, but only bounds the shared exposure: losses beyond the junior tranche reach every holder and the peg |
 
-The stablecoin's fungibility is what forces the agreement. Isolating collateral per market removes it, but loses the shared token that makes a CDP stablecoin useful.
+The stablecoin's fungibility is what forces the agreement. Strict isolation (a token per collateral market) removes it but fragments liquidity. Loss-layer isolation keeps one token and bounds the damage with a junior tranche, but a loss larger than that tranche still reaches every holder. Morpho has no such tail because the loan asset is issued by someone else and market bad debt falls only on that market's lenders.
 
 ## What stays trusted even in the best case
 
@@ -46,11 +47,11 @@ The stablecoin's fungibility is what forces the agreement. Isolating collateral 
 
 ## For synthetic non-USD assets (inference, not a vault finding)
 
-Morpho-style lending can only borrow assets that already exist; a market for an equity or commodity token still depends on whoever issued that token (custodian, SPV or a CDP). So Morpho does not remove the issuer trust for synthetics; it lets lenders price it. A synthetic that must be minted by the protocol faces the shared-liability problem above. The design space in between (isolated mints per collateral, oracle chosen per market, a fixed list of permitted pairs) is what I did not find in the survey and have not evaluated.
+Morpho-style lending can only borrow assets that already exist; a market for an equity or commodity token still depends on whoever issued that token (custodian, SPV or a CDP). So Morpho does not remove the issuer trust for synthetics; it lets lenders price it. A synthetic that must be minted by the protocol faces the shared-liability problem above. The design space in between (strict isolation with a token per collateral, oracle chosen per market, a fixed list of permitted pairs) is what I did not find in the survey and have not evaluated.
 
 ## Not checked
 
 - Safe guard, modules or timelock on Morpho's owner; function-level access control on `enableIrm`, `enableLltv` and `createMarket` from source.
 - Which LLTVs and IRMs are currently enabled, and how many markets exist.
 - MetaMorpho vault curation.
-- Any CDP design with isolated per-collateral issuance.
+- Any CDP design with strict per-collateral issuance, and how large the first-loss tranches are relative to collateral risk in the loss-layer designs.
