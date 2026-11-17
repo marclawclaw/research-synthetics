@@ -51,7 +51,7 @@ This covers the full spectrum of trust models (threshold multisigs, validator se
 
 ## Research status
 
-First pass done 2026-05; Ethereum, Solana and CDP update done 2026-11-16 (agent-assisted, with spot checks against DefiLlama's API). A formal fact-check pass (see `rfp/agents/fact-checker.md`) has not been run on the November changes, including the 2026-11-17 changes that align the CDP notes with the Notion page "CDP-Backed Synthetics" (new notes there carry a "Conflicts and gaps" section and mark agent-reported items that were not re-verified).
+First pass done 2026-05; Ethereum, Solana and CDP update done 2026-11-16 (agent-assisted, with spot checks against DefiLlama's API). A formal fact-check pass (see `rfp/agents/fact-checker.md`) has not been run on the 2026-11-16 changes. The 2026-11-17 CDP-on-LEZ evidence notes (behind the Notion page "CDP-Backed Synthetics") and their project and pattern notes were fact-checked by agents on 2026-11-17 and corrected; each keeps a "Conflicts and gaps" section for what is still unverified.
 
 - [x] [[projects/synthetix-v3]] (refreshed 2026-11)
 - [x] [[projects/gmx-v2]] (refreshed 2026-11)
@@ -79,14 +79,14 @@ Related: [[projects/monero-zcash-synthetics-community-history]] (ecosystem histo
 - [[patterns/collateral-debt-units]] (Notion Part 2)
 - [[patterns/cdp-peg-mechanisms]] (Notion Part 3)
 
-## CDP on LEZ: notes that back the Notion page "CDP-Backed Synthetics"
+## CDP on LEZ: evidence behind the Notion page "CDP-Backed Synthetics"
 
-Part map and terms: [[rfp/appendix/cdp-notion-map]].
+The Notion page holds the decisions; these notes hold the evidence for each part. Part map and terms: [[rfp/appendix/cdp-notion-map]].
 
-- [[rfp/appendix/cdp-admin-switch]] (Part 1: the rules and the admin switch proposal)
+- [[rfp/appendix/cdp-admin-switch]] (Part 1: who can change each rule in surveyed protocols, and what LEZ provides)
 - [[patterns/collateral-debt-units]] (Part 2: units and oracle requirements)
 - [[patterns/cdp-peg-mechanisms]] (Part 3: peg mechanisms)
-- [[rfp/appendix/cdp-isolation]] (Part 4: how a deployment shares risk; filename kept from the earlier "isolation" title)
-- [[rfp/appendix/cdp-risk-privacy-market]] (Parts 5, 7 and 8: questions with evidence)
-- [[rfp/appendix/cdp-oracle]] (Part 6: oracle interface and what is out of scope)
+- [[rfp/appendix/cdp-isolation]] (Part 4: how deployments share risk; filename kept from the earlier "isolation" title)
+- [[rfp/appendix/cdp-risk-privacy-market]] (Parts 5, 7 and 8: who carries the risk, privacy, market)
+- [[rfp/appendix/cdp-oracle]] (Part 6: RFP-019 and RFP-020, XMR/USD providers, multi-oracle designs)
 - [[patterns/cdp-vs-morpho-trust]] (background for Part 4)

@@ -40,7 +40,7 @@ A staker locks SNX and mints sUSD up to the target C-ratio (initially 750 to 800
 - Synths are priced by oracles (see [[patterns/oracle-pricing-model]]); exchanges between Synths settle at the oracle price with no price slippage, so there is no AMM or order book.
 - Exchange fees accrue to the FeePool, which distributes them in sUSD to stakers pro rata to their debt-pool share per fee period.
 - Debt pool: when traders exchange sUSD into sETH and ETH rises, the aggregate debt rises and every staker's debt rises pro rata. Traders' profits are therefore paid by stakers (the counterparty design is the same as the LP-pool risk in [[patterns/lp-counterparty-risk]]).
-- Peg: sUSD has no direct redemption for $1 of collateral. The structural bid is that stakers must buy and burn sUSD to repay debt or to meet the target C-ratio (SCCP-232 explicitly cites staker sUSD purchases as a peg support and a pressure point). Source: [SCCP-232](https://sips.synthetix.io/sccp/sccp-232/).
+- Peg: sUSD has no direct redemption for $1 of collateral. Stakers must buy and burn sUSD to repay debt or to meet the target C-ratio. SCCP-232 (2022-09-11) treats those purchases as pressure on the peg, not support: lowering the target ratio "will also prevent some pressure on the sUSD peg which would be caused by stakers buying additional sUSD on the market to pay their debt" ([SCCP-232](https://sips.synthetix.io/sccp/sccp-232/), re-read 2026-11-17). Reading that forced buying as a structural bid for sUSD is the vault's inference, not the SCCP's.
 
 ## Key behaviours
 

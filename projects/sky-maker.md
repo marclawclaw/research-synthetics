@@ -42,7 +42,7 @@ A user opens a Vault for a collateral type ("ilk"), deposits collateral, draws D
 ## Key behaviours
 
 - [[patterns/synthetic-collateral-models]] : multi-collateral CDP with governance-set per-collateral risk parameters.
-- [[patterns/oracle-pricing-model]] : delayed oracle (OSM) plus Dutch auction; the 2020 stale-price failure is the origin of both.
+- [[patterns/oracle-pricing-model]] : delayed oracle (OSM) plus Dutch auction. Only the Dutch auction (Liquidation 2.0) came after the March 2020 failure. The OSM was already live: the MCD 1.0.0 release (2019-11-18) lists `PIP_ETH` = `0x81FE72B5A8d1A857d176C3E7d5Bd2679A9B85763`, which answers the OSM getter `hop()` = 3,600 s today ([changelog](https://changelog.makerdao.com/releases/mainnet/1.0.0/contracts.json); chain read 2026-11-17; the 2020 value was not read, as the public RPC has no archive state). So the OSM's delay was part of the lag on Black Thursday, not a fix for it.
 - [[patterns/cdp-synthetics-landscape]] : per-position CDP reference design.
 
 ## Architecture decisions

@@ -4,14 +4,14 @@ ecosystem: Ethereum
 category: Synthetics/Stablecoin factory (one collateral per stablecoin)
 status: live (new in 2026; DefiLlama TVL series starts 2026-05-07)
 status_date: 2026-11-17
-website: [NOT FOUND]
+website: https://monolith.market (redirects to www.monolith.market; also the URL DefiLlama lists)
 docs: https://docs.monolith.market
 launched: [NOT FOUND] (first DefiLlama TVL datapoint 2026-05-07)
 ---
 
 # Monolith (Ethereum: a stablecoin factory)
 
-Status: live and new. Monolith calls itself "a Decentralized Stablecoin-as-a-Service Protocol". Anyone can deploy an immutable stablecoin "by providing a collateral token address and a price feed", so each stablecoin has one collateral and one feed. It is the only example found of a separate token per branch (one collateral paired with one synth, each with its own token), which is why it appears in Part 4 of the Notion page ([[rfp/appendix/cdp-isolation]], [[patterns/cdp-vs-morpho-trust]]). The vault previously held it only as a combined row with Swan DAO in [[patterns/cdp-synthetics-landscape]]. Written 2026-11-17 from the docs and from chain reads made in the Notion session (not repeated in this pass); no contract source was read.
+Status: live and new. Monolith calls itself "a Decentralized Stablecoin-as-a-Service Protocol". Anyone can deploy an immutable stablecoin "by providing a collateral token address and a price feed", so each stablecoin has one collateral and one feed. It is the only example found of a separate token per branch (one collateral paired with one synth, each with its own token) ([[rfp/appendix/cdp-isolation]], "Monolith: a token per market"; [[patterns/cdp-vs-morpho-trust]]). The vault previously held it only as a combined row with Swan DAO in [[patterns/cdp-synthetics-landscape]]. Written 2026-11-17 from the docs and from chain reads made in the Notion session; the chain reads were repeated on 2026-11-17 (block 26,432,701) and match. No contract source was read.
 
 ## Adoption metrics
 
@@ -21,9 +21,9 @@ Status: live and new. Monolith calls itself "a Decentralized Stablecoin-as-a-Ser
 | TVL, Swan DAO record (separate record; swanUSD) | $7.62M | 2026-11-17 | [DefiLlama protocols list](https://api.llama.fi/protocols) |
 | TVL, as recorded in the landscape note (combined row) | $7.8M and $6.8M | 2026-11-16 | [[patterns/cdp-synthetics-landscape]] section 2.2 |
 | TVL, first datapoint | $204 | 2026-05-07 | [DefiLlama Monolith Market](https://api.llama.fi/protocol/monolith-market) |
-| Fees | [NOT FOUND] (the fee endpoint for this slug returned no usable data) | 2026-11-17 | [DefiLlama fees: monolith-market](https://api.llama.fi/summary/fees/monolith-market) |
+| Fees | [NOT FOUND]: DefiLlama has no fees adapter for this slug (the fees endpoint returns HTTP 400, "not found") | 2026-11-17 | DefiLlama fees API |
 
-The two TVL readings for 2026-11-16 and 2026-11-17 are not the same split; which record holds which instances is not reconciled.
+The landscape note's $7.8M for 2026-11-16 matches DefiLlama's Monolith Market datapoint for that day ($7,797,508, read 2026-11-17). Swan DAO is a separate DefiLlama record, listed since 2026-11-12 (`listedAt`). Whether SwanUSD's TVL is also counted inside the Monolith Market record is unverified.
 
 ## How it works
 
@@ -33,23 +33,23 @@ A borrower deposits the instance's collateral and mints its stablecoin in one of
 
 ### Protocol perspective
 
-- **One collateral per stablecoin.** The Factory deploys all components of an instance from a collateral token address and a price feed. Each instance issues its own token, so a holder of one stablecoin carries one collateral's risk. Inference: instances on one factory share the factory operator and its fee switch, and nothing else is described as shared.
+- **One collateral per stablecoin.** The Factory deploys all components of an instance from a collateral token address and a price feed. Each instance issues its own token, so a holder of one stablecoin carries one collateral's risk. What instances on one factory share: the factory operator and its fee switch; one `InterestModel` contract ("All Lenders deployed by this Factory use this same `InterestModel` instance", [Factory reference](https://docs.monolith.market/reference/Factory); on chain every V2 Lender reads `0x77fb…ad6d` and both V1 Lenders read `0x5b67…c113`, 2026-11-17); and a factory-wide `minDebtFloor`. The Lens and Metadata contracts are shared across V1 and V2 ([Contract Addresses](https://docs.monolith.market/developers/contract-addresses.md)). Whether the InterestModel holds any per-instance state was not checked.
 - **Rate controller.** When "redemption liquidity is low (free-debt share below target), the borrow rate rises over time"; when free debt is plentiful the rate decays toward a low floor (redemptions page). The landing page calls it "the first fully autonomous interest rate controller in a stablecoin". No numeric rates are given.
-- **Immutability deadline.** Each stablecoin "becomes irreversibly immutable when reaching a maximum immutability deadline of four years since deployment". Before it the instance operator can tune half-life, the free-debt band, the redeem fee and the interest fee; after it those settings lock; a deployer can set the offset to 0 for immediate immutability ([Deployer FAQ](https://docs.monolith.market/faq/deployer), re-read 2026-11-17).
+- **Immutability deadline.** Each stablecoin "becomes irreversibly immutable when reaching a maximum immutability deadline of four years since deployment". The deadline is `deployTimestamp + timeUntilImmutability` (at most 4 years, or 0 for immediate immutability), and the operator can lock early with `enableImmutabilityNow()`. It locks the half-life of rate changes, the target free-debt band, the redemption fee and the PSM buy path. The operator keeps, after the deadline, "Operator/manager rotation", the "Local reserve fee bps" (capped at 5000 bps on V2, 10% on V1) and "Pulling the instance operator fee" ([Immutability Deadline](https://docs.monolith.market/protocol/immutability-deadline.md), read 2026-11-17). The [Deployer FAQ](https://docs.monolith.market/faq/deployer) also lists the "interest fee" among the settings that lock; see Conflicts and gaps.
 - **Peg stability module (optional per instance).** Sells (stablecoin to the reference asset) are available before and after the deadline; buys only before it, with no fee in the first half of the window and a linear fee ramp from 0 to 100 bps in the second half, paid to the instance's local reserves ([PSM docs](https://docs.monolith.market/protocol/peg-stability-module), re-read 2026-11-17).
 - **Fee switch (factory).** The factory operator can set a default fee (`feeBps`, cap 1000 bps, 10%) and per-instance custom fees (same cap); `feeRecipient` is the address that pulls "global reserves" accrued at each Lender ([Factory reference](https://docs.monolith.market/reference/Factory), [Deployer FAQ](https://docs.monolith.market/faq/deployer), re-read 2026-11-17). Instance operators get "local reserves" that accrue on the instance; anyone may call `pullLocalReserves()` but the minted amount goes to the instance operator.
 - **DAO-launched markets.** A DAO Factory creates the market on the V2 Factory and sets its local reserve fee to 5000 bps (50%); GOV allocation to Monolith is "Fixed 2% (200 bps) into Monolith vesting (4-year linear)" of the 10,000,000 GOV supply; by default 100% of the revenue router's share goes to GOV staking ([DAO docs](https://docs.monolith.market/protocol/dao), re-read 2026-11-17). Attaching a DAO to an existing market does not change its fee.
 
-## Chain reads (Notion session, 2026-11-17; not repeated in this pass)
+## Chain reads (Notion session, 2026-11-17; repeated 2026-11-17 at block 26,432,701)
 
 - Factories: V2 `0xc68F3e777f28c52FF9DB0276a14F59D96Aa2f931` (5 deployments) and V1 `0x6D961c9DCF1AD73566822BA4B087892e3839B849` (2 deployments). The Factory reference says V1 still hosts existing markets such as invUSD and V2 serves new markets and DAO launches.
 - Both factories have default fee 0 and `feeRecipient` = the zero address, so the global fee switch was off. `customFeeBps` is 0 on all 7 deployments (V1: invUSD, GUSD; V2: chfUSD, goldUSD, SwanUSD, two pUSD). Only SwanUSD has a local fee (5000 bps, the DAO path).
-- The factory operator `0x926df14a23be491164dcf93f4c468a50ef659d5b` is a 7.7 KB contract that answers no Safe getters; it also operates the invUSD instance.
+- The factory operator `0x926df14a23be491164dcf93f4c468a50ef659d5b` is a 7.7 KB contract that answers no Safe getters; it operates both factories and the invUSD instance. The docs label it "V2 Operator (also Monolith beneficiary for DAO Factory)" ([Contract Addresses](https://docs.monolith.market/developers/contract-addresses.md)). The other six instances have their own operators (four distinct addresses).
 
 ## Key behaviours
 
 - [[patterns/cdp-vs-morpho-trust]] : the separate-token-per-branch row, with the cost of fragmented liquidity and trust returning at the market and oracle.
-- [[rfp/appendix/cdp-isolation]] : question 1 (how many tokens per synth) and the precedent check.
+- [[rfp/appendix/cdp-isolation]] : "Monolith: a token per market", and "Precedent findings" for how it compares with the other surveyed protocols.
 - [[patterns/cdp-peg-mechanisms]] : redemption, a rate controller and an optional PSM in one design.
 
 ## Differentiators
@@ -59,8 +59,16 @@ A borrower deposits the instance's collateral and mints its stablecoin in one of
 ## Limitations and criticisms
 
 - Fragmented liquidity: each stablecoin is its own token.
-- Trust is not gone: the factory operator controls the global fee and feeRecipient (bounded, 10% cap), and an instance operator tunes parameters until the deadline.
-- Young: TVL series starts 2026-05-07; [NOT FOUND] for audits, liquidation parameters per instance and per-instance oracle choice.
+- Trust is not gone: the factory operator controls the global fee and feeRecipient (bounded, 10% cap); an instance operator tunes monetary parameters until the deadline and keeps role rotation and the local reserve fee (up to 50% on V2) after it.
+- Young: TVL series starts 2026-05-07; [NOT FOUND] for liquidation parameters per instance and per-instance oracle choice.
+
+### Audits
+
+The [Audits page](https://docs.monolith.market/security/audits.md) (read 2026-11-17) lists four human-led engagements and three AI-assisted reviews, with reports linked: Electisec (yAudit) private audit, June 2025; ChainSecurity private audit, October 2025; Sherlock public contest, December 2025 (8 to 14 December); ChainSecurity re-audit (v5.1), March to April 2026; and AI-assisted reviews by Sherlock AI, Nemesis and Zellic v12, April 2026. A bug bounty is live on Sherlock ([Security overview](https://docs.monolith.market/security/overview.md)). The reports themselves were not read.
+
+### Liquidations
+
+From the [Liquidations page](https://docs.monolith.market/protocol/liquidations.md) (read 2026-11-17): anyone can liquidate a position whose debt exceeds price × collateral × collateralFactor; at most 25% of the debt per call, with a 10,000 Coin minimum chunk; the incentive rises linearly from 0% at the collateral factor to 10% at 5 percentage points above it. If debt exceeds 100 times the collateral value, the remaining debt is written off and "redistribute[d] across the system's borrowers" (inferred to mean one instance's borrowers, since each instance is one Lender; the page does not say). A stale feed does not stop liquidations; it switches the market to reduce-only and decays the price over 24 hours. Liquidations stop only when the feed reverts or returns a non-positive price. The Factory reference caps `collateralFactor` at 8500 bps (85%).
 
 ### Fees and borrower cost
 
@@ -70,20 +78,22 @@ A borrower deposits the instance's collateral and mints its stablecoin in one of
 | Borrow rate, "paid" debt | Variable, set by the autonomous controller; numeric rates [NOT FOUND] in the docs read | same |
 | Redemption fee | "a small redemption fee"; the Factory's deploy parameter `redeemFeeBps` is documented as at most 500 bps (5%) | [Redemptions](https://docs.monolith.market/protocol/redemptions.md); [Factory reference](https://docs.monolith.market/reference/Factory) |
 | Factory fee (global) | Default 0 on both factories and `feeRecipient` is the zero address (chain, Notion session); cap 1000 bps (10%), per-instance override with the same cap (docs) | [Factory reference](https://docs.monolith.market/reference/Factory) |
-| Local reserve fee (instance) | 5000 bps (50%) on DAO-launched markets (chain: SwanUSD; docs: DAO page); cap otherwise in conflict, see below | [DAO docs](https://docs.monolith.market/protocol/dao) |
+| Local reserve fee (instance) | Cap 5000 bps (50%) on V2 markets, 10% on V1 markets; set to 5000 bps on DAO-launched markets (chain: SwanUSD, the only instance with a non-zero local fee on 2026-11-17) | [Immutability Deadline](https://docs.monolith.market/protocol/immutability-deadline.md); [DAO docs](https://docs.monolith.market/protocol/dao) |
 | PSM buy fee (optional) | 0 in the first half of the immutability window, then a linear ramp to 100 bps; to local reserves | [PSM docs](https://docs.monolith.market/protocol/peg-stability-module) |
 
 ## Conflicts and gaps
 
-- **Local reserve fee cap.** The Notion-session findings recorded a cap of 50% on V2 and 10% on V1. A search summary of the Immutability Deadline page says the local reserve fee is "bounded by a 10% cap"; the Deployer FAQ and the Factory reference state no cap for it; the DAO path sets 5000 bps, observed on chain for SwanUSD. Not reconciled.
+- **Local reserve fee cap: resolved.** The Immutability Deadline page, read directly on 2026-11-17, says "bounded by a 50% / 5000 bps cap on V2 markets; older V1 markets keep the prior 10% cap". An earlier search summary gave only the 10% figure.
 - **GOV share.** The 2% vested over four years is on the DAO page (re-read 2026-11-17); the Deployer FAQ does not repeat it. Not verified on chain.
 - **"One collateral per stablecoin" and "one feed"** are read from the landing page and the factory inputs. Whether two instances can share a collateral, and whether an instance can ever add a collateral, is not stated.
-- **Not checked:** liquidation design ("Anyone liquidates" is from the landscape row; the liquidation page was not read), per-instance parameters, audits and the factory operator's signers.
+- **What locks at the deadline.** The Deployer FAQ says the "interest fee" locks; the Immutability Deadline page says the local reserve fee stays adjustable after it. The docs disagree; not reconciled.
+- **Developer.** Third-party listings and the docs' image CDN path ("inversefinance") point to Inverse Finance; not confirmed from a primary source.
+- **Not checked:** per-instance parameters, the audit reports' contents and the factory operator's signers.
 
 ## Sources
 
 - [Monolith docs](https://docs.monolith.market/) : accessed 2026-11-17
 - [Monolith docs: redemptions](https://docs.monolith.market/protocol/redemptions.md), [Factory](https://docs.monolith.market/reference/Factory), [Deployer FAQ](https://docs.monolith.market/faq/deployer), [DAO](https://docs.monolith.market/protocol/dao), [Peg Stability Module](https://docs.monolith.market/protocol/peg-stability-module) : accessed 2026-11-17
-- [Monolith docs: Immutability Deadline](https://docs.monolith.market/protocol/immutability-deadline) : search summary only, accessed 2026-11-17
+- [Monolith docs: Immutability Deadline](https://docs.monolith.market/protocol/immutability-deadline.md), [Liquidations](https://docs.monolith.market/protocol/liquidations.md), [Audits](https://docs.monolith.market/security/audits.md), [Security overview](https://docs.monolith.market/security/overview.md), [Contract Addresses](https://docs.monolith.market/developers/contract-addresses.md) : read directly, 2026-11-17
 - [DefiLlama Monolith Market](https://api.llama.fi/protocol/monolith-market), [protocols list](https://api.llama.fi/protocols) : accessed 2026-11-17
-- Ethereum mainnet reads of the two factories and seven deployments by the Notion session, 2026-11-17 (agent session; addresses as listed above)
+- Ethereum mainnet reads of the two factories and seven deployments by the Notion session, 2026-11-17, repeated the same day at block 26,432,701 via publicnode (`deploymentsLength`, `deployments`, `feeBps`, `feeRecipient`, `customFeeBps`, `operator`, `interestModel`; Lender `feeBps`, `operator`, `interestModel`)

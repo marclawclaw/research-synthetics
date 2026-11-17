@@ -11,22 +11,22 @@ Synthetic assets are on-chain instruments that derive their value from an extern
 - BTC-backed synthetics on Bitcoin L2s (sBTC on Stacks, Babylon-related)
 - Cross-chain synthetic representations of ETH, BTC and SOL
 - CDP, debt-pool, collateral-split and delta-neutral synthetic dollars and assets (Sky, Liquity, Alchemix, Hylo, Ethena, Indigo, Monolith and others; see `patterns/cdp-synthetics-landscape.md`)
-- Working notes for a CDP on LEZ (rules and admin switch, units and oracle requirements, peg mechanisms, how a deployment shares risk, oracle interface), which back the Notion page "CDP-Backed Synthetics"; start at `rfp/appendix/cdp-notion-map.md`
+- Evidence notes for a CDP on LEZ (who controls each rule, units and oracle requirements, peg mechanisms, how a deployment shares risk, who carries the risk, privacy and market, oracle), which back the Notion page "CDP-Backed Synthetics"; start at `rfp/appendix/cdp-notion-map.md`. The Notion page holds the decisions; these notes hold only the evidence
 
-Last refreshed: Ethereum, Solana and CDP coverage 2026-11-16; the CDP-on-LEZ notes were aligned with the Notion page on 2026-11-17 (agent-assisted, not yet through a formal fact-check pass); Hyperliquid, dYdX and sBTC May 2026.
+Last refreshed: Ethereum, Solana and CDP coverage 2026-11-16; the CDP-on-LEZ notes were written 2026-11-17 and fact-checked the same day (agent-assisted); Hyperliquid, dYdX and sBTC May 2026.
 
 ## Structure
 
 - `projects/` : one atomic note per protocol
 - `metrics/` : cross-project metric comparisons (TVL, volume, fees)
 - `patterns/` : recurring design and trust patterns
-- `rfp/appendix/` : appendix notes for RFP work; the CDP-on-LEZ set (`cdp-notion-map.md` maps each part of the Notion page "CDP-Backed Synthetics" to a vault file) sits here with `patterns/collateral-debt-units.md` and `patterns/cdp-peg-mechanisms.md`; `rfp/` also holds agent prompts and templates
+- `rfp/appendix/` : appendix notes for RFP work; the CDP-on-LEZ evidence set (`cdp-notion-map.md` maps each part of the Notion page "CDP-Backed Synthetics" to the vault file holding its evidence) sits here with `patterns/collateral-debt-units.md` and `patterns/cdp-peg-mechanisms.md`; `rfp/` also holds agent prompts and templates
 - `_index.md` : ranking and selection table
 - `summary.md` : final synthesis
 
 ## Navigation
 
-Open this folder in Obsidian for full graph and backlink support. Wikilinks: `[[projects/synthetix]]`.
+Open this folder in Obsidian for full graph and backlink support. Wikilinks: `[[projects/synthetix-v2]]`.
 
 ## Conventions
 
