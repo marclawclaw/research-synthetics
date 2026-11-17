@@ -45,6 +45,8 @@ A borrower opens a Trove, deposits collateral and mints stablecoin. V1: ETH only
 
 - [[patterns/synthetic-collateral-models]] : multi-position CDP, overcollateralised, immutable; compare with the shared debt pool in [[projects/synthetix-v2]].
 - [[patterns/cdp-synthetics-landscape]] : survival correlates (immutability, one or few collateral types, redemption floor).
+- [[rfp/appendix/cdp-isolation]] : Liquity V2 as one token across collaterals with a narrow loss group; see "Stability Pool and redistribution" below.
+- [[patterns/cdp-peg-mechanisms]] : redemption floor and borrower-set rates as peg mechanisms.
 
 ## Architecture decisions
 
@@ -124,6 +126,26 @@ The TCR column is my calculation from `getEntireBranchColl()`, `getEntireBranchD
 
 **Conflicts with the rest of this note.** The "User perspective" section gave V1 minimum debt as "2,000 LUSD plus a 200 LUSD liquidation reserve" (now corrected); on chain `MIN_NET_DEBT()` is 1,800 LUSD and `LUSD_GAS_COMPENSATION()` 200 LUSD, so the minimum total debt is 2,000 LUSD including the reserve. "Neither has an admin key" holds for Liquity's own contracts, but both versions inherit Chainlink's admin over the feed proxies, and V2 additionally Lido's and Rocket Pool's over the exchange rates.
 
+## Stability Pool and redistribution: V2 WETH branch (read 2026-11-17)
+
+Why this is here: Part 4 of the Notion page ([[rfp/appendix/cdp-isolation]]) uses Liquity V2 as the example of one token across collaterals with a narrow loss group (one collateral): the first-loss pool (Liquity's Stability Pool) and the redistribution both stay on one branch. This section records how that works in the deployed code, for the WETH branch only. The wstETH and rETH branches were not read; they are assumed to run the same code.
+
+Terms. A Trove is Liquity's name for one borrower's position: the collateral plus the BOLD debt minted against it. V2 represents each Trove as an NFT; a borrower can open several; adding collateral or minting more changes the same Trove. WETH branch: minimum ratio 110% and minimum debt 2,000 BOLD (table above). Tags: **chain** = read from Ethereum mainnet; **source** = Sourcify-verified source of the deployed contract.
+
+- **Addresses (chain, 2026-11-17).** BOLD `0x6440f144b7e50D6a8439336510312d2F54beB01D`; `collateralRegistryAddress()` = `0xf949982b91c8c61e952b3ba942cbbfaef5386684`; `getTroveManager(0)` = `0x7bcb64b2c9206a5b699ed43363f6f98d4776cf5a` (the WETH branch); that TroveManager's `stabilityPool()` = `0x5721cbbd64fc7ae3ef44a0a3f9a790a9264cf9bf`.
+- **Pool size (chain, 2026-11-17, block 26,432,207).** `getTotalBoldDeposits()` = 7,812,940.57 BOLD; `getCollBalance()` = 21.83 WETH (collateral gains that depositors have not yet claimed). The Notion session read the same two values earlier on 2026-11-17; this pass repeated both calls and got the same figures to the displayed precision.
+- **Liquidation capacity is the BOLD deposits only (source).** `StabilityPool.offset(debt, coll)` burns `_debtToOffset` BOLD from `totalBoldDeposits`, adds `_collToAdd` to the `collBalance` tracker and rescales the pool's `P` and `S` accumulators; `collBalance` is never used to absorb a later liquidation. Collateral gains are tracked per depositor and can only be claimed: `provideToSP` and `withdrawFromSP` take a `_doClaim` flag (the gain is sent, or otherwise moved to `stashedColl`), and `claimAllCollGains()` pays out `stashedColl` for a depositor with no deposit. Once `totalBoldDeposits` has reached `MIN_BOLD_IN_SP`, a liquidation or withdrawal can never fully empty the pool: at least 1 BOLD stays.
+- **What the pool takes and what is redistributed (source, `TroveManager._getOffsetAndRedistributionVals`).**
+  - `debtToOffset` = the smaller of the Trove's entire debt and the BOLD in the pool available for offsets.
+  - The pool receives the share of the Trove's collateral equal to the share of its debt that was offset, minus collateral gas compensation; that amount is capped at `debt x (1 + LIQUIDATION_PENALTY_SP) / price`, and any excess is a collateral surplus returned to the Trove owner through the CollSurplusPool.
+  - The remaining debt (`debtToRedistribute`) and the rest of the collateral (plus any surplus left from the offset, which the redistribution penalty can absorb) go to all other active Troves of the same branch, capped at `debt x (1 + LIQUIDATION_PENALTY_REDISTRIBUTION) / price` with the excess again returned to the owner. They are credited through the per-unit-of-stake accumulators `L_coll` and `L_boldDebt` and applied to each Trove when it is next touched.
+  - Penalties by branch (chain, table above): 5% for the Stability Pool share on all branches; 10% (WETH) and 20% (wstETH, rETH) on the redistribution share.
+- **Reading for the page.** BOLD is one token across the three branches, but a liquidation on one branch touches only that branch's pool and that branch's other Troves. A loss larger than the pool and the branch's remaining Troves is not handled by any further layer in this code: the README's bad-debt remedies are not in the deployed core (see the shutdown paragraph above).
+
+Method. The Stability Pool implementation and TroveManager sources were downloaded from Sourcify in the Notion session and kept in its scratchpad; this pass re-read their stored copies and repeated the two `eth_call` reads through `ethereum-rpc.publicnode.com`. The selectors were computed locally. The TroveManager and pool addresses come from the BOLD token and the collateral registry as listed. The liquidation penalties per branch are from the earlier chain reads in this note, not re-read.
+
+Not checked: the wstETH and rETH Stability Pools and TroveManagers; whether the pool's collateral gains are large relative to depositors' BOLD over time (only the 21.83 WETH snapshot).
+
 ## Sources
 
 - [DefiLlama Liquity V1 API](https://api.llama.fi/protocol/liquity-v1) : accessed 2026-11-16
@@ -144,3 +166,4 @@ The TCR column is my calculation from `getEntireBranchColl()`, `getEntireBranchD
 - [Ethereum mainnet JSON-RPC (publicnode)](https://ethereum-rpc.publicnode.com) : `eth_call`, `eth_getStorageAt`, `eth_getCode` read 2026-11-16
 - [Liquity V2 LQTY staking and voting FAQ](https://docs.liquity.org/v2-faq/lqty-staking.md) : accessed 2026-11-16
 - [Liquity V2 legacy deployment addresses](https://docs.liquity.org/v2-documentation/technical-resources.md) : accessed 2026-11-16
+- [Sourcify verified source, V2 WETH Stability Pool `0x5721cbbd64fc7ae3ef44a0a3f9a790a9264cf9bf` and WETH TroveManager `0x7bcb64b2c9206a5b699ed43363f6f98d4776cf5a`](https://sourcify.dev/server/v2/contract/1/0x5721cbbd64fc7ae3ef44a0a3f9a790a9264cf9bf) : read 2026-11-17 (stored copies from the Notion session); pool size re-read on chain 2026-11-17

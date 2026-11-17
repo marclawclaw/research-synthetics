@@ -7,7 +7,7 @@ seen_in: [synthetix-v2, synthetix-v3, liquity, sky-maker, alchemix, metronome-sy
 
 Survey of 50 protocol rows (Monolith and Swan DAO share one row; Kamino kUSD is listed but not counted) of protocols that let users lock collateral and mint a synthetic token or stablecoin tracking an external reference (USD, EUR, JPY, BTC, ETH, equities, commodities). Access date for every row and every figure unless stated otherwise: 2026-11-16. TVL and supply are DefiLlama figures from that day ([protocols](https://api.llama.fi/protocols), [stablecoins](https://stablecoins.llama.fi/stablecoins), [fees](https://api.llama.fi/overview/fees)); per-row source links give the protocol API page plus the primary documentation used for ratios, liquidation and fees. `[NOT FOUND]` means no sourced value was located; nothing here is estimated.
 
-Companion notes with full detail: [[projects/synthetix-v2]], [[projects/liquity]], [[projects/sky-maker]], [[projects/alchemix]], [[projects/metronome-synth]], [[projects/youves]], [[projects/mirror-protocol]], [[projects/hylo]]. Existing related notes: [[projects/synthetix-v3]], [[projects/ethena-usde]], [[patterns/synthetic-collateral-models]], [[patterns/oracle-pricing-model]], [[patterns/lp-counterparty-risk]].
+Companion notes with full detail: [[projects/synthetix-v2]], [[projects/liquity]], [[projects/sky-maker]], [[projects/alchemix]], [[projects/metronome-synth]], [[projects/youves]], [[projects/mirror-protocol]], [[projects/hylo]], [[projects/indigo]], [[projects/monolith]] (the last two added 2026-11-17). Notes that use this survey for the CDP on LEZ: [[rfp/appendix/cdp-notion-map]]. Existing related notes: [[projects/synthetix-v3]], [[projects/ethena-usde]], [[patterns/synthetic-collateral-models]], [[patterns/oracle-pricing-model]], [[patterns/lp-counterparty-risk]].
 
 Abbreviations: CR = collateral ratio; MCR = minimum CR; LTV = loan-to-value; SP = Stability Pool; PSM = peg stability module; DL = DefiLlama protocol API (`https://api.llama.fi/protocol/<slug>`); DLS = DefiLlama stablecoins list.
 
@@ -25,6 +25,7 @@ Notes on the boundaries:
 - Metronome Synth is a per-position CDP that mints several synths per position, but its swap module mints and burns synths at oracle price against a shared pool, so it carries a debt-pool-like exposure that produced the July 2026 shortfall ([[projects/metronome-synth]]).
 - Alchemix removes the repayment burden (yield repays the loan) but each position is still its own debt; the Transmuter queue is the peg anchor ([[projects/alchemix]]).
 - Collateral-split designs have no borrower and therefore no interest rate; the cost of the leverage side is the "borrower cost" (xASSET funding, fee curves).
+- Synths per deployment: Liquity V1 and V2, Frankencoin and crvUSD are single-synth by design, so a claim generalised from them is single-synth precedent. The multi-synth products in this survey are Synthetix V2 (one shared debt pool), Metronome (a cross-margin pool, the $15.7M shortfall), Indigo (a Stability Pool per synth, [[projects/indigo]]), Youves (an engine contract per synth and collateral pair) and Mirror (historical).
 
 ## 2. Comparison table
 

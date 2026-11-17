@@ -1,11 +1,17 @@
 ---
 tags: [pattern, oracle, cdp, units, collateral, debt, design]
-seen_in: [sky-maker, liquity, synthetix-v2, metronome-synth, mirror-protocol, alchemix, youves, frankencoin, crvusd]
+seen_in: [sky-maker, liquity, synthetix-v2, metronome-synth, mirror-protocol, alchemix, youves, frankencoin, crvusd, indigo]
 ---
 
 # Units of collateral and debt in CDPs and multi-synth protocols
 
-Question: when a CDP takes collateral that is not USD (for example ETH) and/or issues debt that is not USD (a BTC, EUR, JPY or floating synth), how do existing protocols value each side for the collateral ratio (CR) check, and what does that require of the oracle? Context: a CDP minting sXMR and sBTC on a new chain whose oracles publish USD pairs only (XMR/USD, BTC/USD, ETH/USD), plus a planned RAI-style floating stablecoin.
+Question: when a CDP takes collateral that is not USD (for example ETH) and/or issues debt that is not USD (a BTC, EUR, JPY or floating synth), how do existing protocols value each side for the collateral ratio (CR) check, and what does that require of the oracle? Context: a CDP minting sXMR and sBTC on a new chain whose oracles publish USD pairs only (XMR/USD, BTC/USD, ETH/USD). The reflexive stablecoin (RFP-013) is a separate product, so here it appears only as collateral.
+
+This note backs Part 2 ("Units and oracle requirements") of the Notion page "CDP-Backed Synthetics"; see [[rfp/appendix/cdp-notion-map]]. Part 2 is not a decision: which collateral is accepted is a Listing role call ([[rfp/appendix/cdp-admin-switch]]). It shows how the numbers work and what each choice asks of the oracle. The Part 2 worked example still uses ETH as the example collateral; whether to switch it to LGO is pending, so this note keeps ETH.
+
+Terms: a synth is a token the CDP mints against collateral, such as sXMR or sBTC. A synth stablecoin is a synth that tracks a stable unit (for example a USD synth), minted by the CDP. A collateral stablecoin is a stablecoin a borrower deposits as collateral, not minted by this CDP; the reflexive stablecoin (RFP-013) is a candidate. LGO is the Logos Native Gas token. The debt-valuation variants below describe the synth side, including synth stablecoins.
+
+Highlight convention: the Notion page colours decisions and risks. This vault has no colours, so a recommendation is marked "Recommendation: ...", a decision with no recommendation "Open decision: ..." and a risk that needs evaluating "Risk to evaluate: ...".
 
 Method: contract source read from shallow clones (commit hashes in Sources), on-chain `eth_call` reads through `ethereum-rpc.publicnode.com` at block 26,426,729 (2026-11-16 09:35 UTC), and project docs where no source was available. All accessed 2026-11-16.
 
@@ -25,6 +31,24 @@ Observed variants of the debt side:
 - **Same-asset debt:** debt and collateral share a denomination, so no external price is needed (except for wrapper exchange rates).
 - **Oracle-free:** the borrower declares a price, and third parties challenge it.
 
+### 1.1 The same variants as the Notion page's table
+
+| How the debt is valued | Feeds the ratio check reads | Who does it |
+|---|---|---|
+| Fixed at par (1 USD, 1 ZCHF) | Collateral/USD only | Sky/Maker (`par` = 1.0 on chain), Liquity V1 and V2, crvUSD (Frankencoin also counts debt in ZCHF units but reads no feed, see the oracle-free row) |
+| Priced by oracle: one USD feed per asset, cross rates by division | Collateral/USD and synth/USD | Synthetix V2 (a feed per synth, sUSD hard-coded at 1), Metronome (msETH, msBTC), Mirror (UST as base token), Youves (docs), JPY DeFi (yen debt: collateral/USD divided by JPY/USD) |
+| Internal target price that drifts | Collateral/USD only; a separate market feed steers the rate | Reflexer RAI: Maker's formula with `par` replaced by RAI's redemption price |
+| Direct cross pair | One collateral/synth feed | Indigo V3 (docs: Collateral/iAsset via Pyth; whether Pyth builds it from USD legs was not found) |
+| Same asset as the collateral | No price feed, only the wrapper's exchange rate | Alchemix (alETH against ETH yield tokens) |
+| Borrower declares the price, anyone can challenge | None | Frankencoin |
+
+sXMR and sBTC are oracle-priced debt (second row): the Synthetix, Metronome and Mirror pattern. A USD synth stablecoin would be the first row, and a floating synth stablecoin the third. The reflexive stablecoin (RFP-013) is a separate product, so here it appears only as collateral.
+
+Two things stand out (as on the Notion page):
+
+- Risk to evaluate: every protocol in the second row hard-codes its own base token at 1. sUSD is "never stale", UST was fixed at 1, and msUSD reads 1.0 on chain while trading at $0.818. A depeg of the base token never reaches the ratio check (section 3.1; evidence in [[projects/synthetix-v2]], [[projects/mirror-protocol]] and [[projects/metronome-synth]]).
+- For liquid staking collateral, Liquity V2 and JPY DeFi build the price as underlying/USD x exchange rate, and take the lower of market and exchange-rate prices for borrowing and liquidation, the higher for redemption (section 3.7).
+
 ## 2. Comparison table
 
 | Protocol | Collateral | Debt unit | CR unit of account | Feeds read for CR | How combined | Debt valuation | Staleness and fallback | Source |
@@ -42,7 +66,7 @@ Observed variants of the debt side:
 | Metronome Synth (Pool, MasterOracle) | Multi (USDC, ETH, WBTC, vault tokens) | msUSD, msETH, msBTC | USD | One USD price per token through `MasterOracle.quoteTokenToUsd` (Chainlink per docs) | `Pool.debtPositionOf`: `debtOf` = `sum quoteTokenToUsd(synth, balance)`; `depositOf` = `sum quoteTokenToUsd(underlying, balance) x collateralFactor`; healthy if debt <= limit | msETH and msBTC oracle-priced (chain: 1,795.73 and 64,323.12 USD per unit); msUSD returns exactly 1.0 from its own oracle `0x2789...afb1` (chain) while DefiLlama prices it at $0.818 | [NOT FOUND] in the public repo (MasterOracle source is not in it); docs mention "internal oracle parameters" only | metronome-synth-public `Pool.sol`, `IMasterOracle.sol`; chain reads; [[projects/metronome-synth]] |
 | Mirror (Terra, dead) | UST, aUST, LUNA, others | mAssets (mAAPL etc.) | Collateral asset units | mAsset price and collateral price, both quoted in the base asset (UST) | `asset_price_in_collateral_asset = collateral_price / asset_price` (`mirror_mint/src/positions.rs`); `query_price` in `mirror_oracle` returns `base_price / quote_price` | Oracle-priced in UST; the base asset itself is `Decimal::one()` with `last_updated_time = u64::MAX`; delisted assets use a fixed `end_price` | `PRICE_EXPIRE_TIME` = 60 s on asset and collateral queries; operations fail when expired | mirror-contracts `mirror_mint`, `mirror_oracle`, `mirror_collateral_oracle` |
 | Youves (Tezos) | XTZ, tzBTC, USDt, SIRS | uUSD, uBTC, uXTZ | USD ("reference currency") | Oracle via Acurast (docs); per-feed detail [NOT FOUND] | Docs: "USD value of available collateral divided by the USD value of outstanding youves tracker tokens" | Oracle target price per tracker; units [NOT FOUND] | [NOT FOUND]; two 2022 oracle DoS post-mortems exist ([[projects/youves]]) | [Collateral management details](https://docs.youves.com/syntheticAssets/stableTokens/collateralManagement/Collateral-Management-Details); [Oracles](https://docs.youves.com/marketsAndData/Oracles) |
-| Indigo V3 (Cardano) | ADA and Cardano native tokens | iUSD, iBTC, iETH | Collateral per iAsset (docs) | One "Collateral Asset Price Oracle" per pair, "pricing in Collateral/iAsset (e.g., BTC/iUSD or ADA/iUSD)"; Pyth since V3 | Direct cross pair as far as the protocol sees it; whether the feed is composed from USD legs is [NOT FOUND] | Oracle-priced relative to collateral | [NOT FOUND] | [Indigo V3 docs](https://docs.indigoprotocol.io/readme/indigo-protocol-v3.md) |
+| Indigo V3 (Cardano) | ADA and Cardano native tokens | iUSD, iBTC, iETH | Collateral per iAsset (docs) | One "Collateral Asset Price Oracle" per pair, "pricing in Collateral/iAsset (e.g., BTC/iUSD or ADA/iUSD)"; Pyth since V3 | Direct cross pair as far as the protocol sees it; whether the feed is composed from USD legs is [NOT FOUND] | Oracle-priced relative to collateral | [NOT FOUND] | [Indigo V3 docs](https://docs.indigoprotocol.io/readme/indigo-protocol-v3.md); [[projects/indigo]] |
 | Alchemix V2 | Yield tokens (wstETH, rETH; adapters also exist for Aave, Yearn, Vesper and others) | alETH, alUSD | Debt token (alETH = ETH) | No USD feed; adapter `price()` per yield token. wstETH: Chainlink stETH/ETH times `getStETHByWstETH`; rETH: `getEthValue` only | `_validate`: `totalValue(owner) / debt >= minimumCollateralization`; `totalValue` sums `convertSharesToUnderlyingTokens` then `normalizeUnderlyingTokensToDebt` (decimal `conversionFactor`) | Same asset: 1 alETH = 1 ETH of underlying | wstETH adapter reverts if stETH/ETH older than 86,400 s and caps stETH/ETH at 1.0; `maximumLoss` per yield token blocks actions on sharp value loss | v2-foundry `AlchemistV2.sol`, `adapters/lido/WstETHAdapter.sol`, `adapters/rocket/` |
 | Frankencoin | Any ERC-20 per position | ZCHF | ZCHF per collateral unit | None | `_checkCollateral`: `collateral x price >= minted`; `price` "zchf price per unit of the collateral below which challenges succeed" set by the position owner | Fixed: debt counted in ZCHF units | No oracle; a price increase triggers a 3-day minting cooldown (`_preparePriceIncrease`; the 3x cap in this file is not in the deployed `PositionV2`, see [[projects/frankencoin]]); challengers auction collateral if `price` is too high | FrankenCoin `contracts/minting/Position.sol` |
 | crvUSD (LLAMMA, Controller) | ETH, wstETH, WBTC etc. | crvUSD | crvUSD (treated as USD) | Curve pool EMA oracles (tricrypto `price_oracle`, crvUSD stableswap pools aggregated) bounded by Chainlink | `CryptoWithStablePriceAndChainlink._raw_price`: `crv_p = p_crypto x p_stable_agg / p_stable`, clamped to `Chainlink x (1 +/- BOUND_SIZE%)`; Controller `_health` = AMM `get_x_down` / debt minus 1 | Fixed: debt in crvUSD units | No staleness check on the Chainlink bound in this oracle (only `latestRoundData().answer` is read); EMA smoothing via `ma_exp_time` | curve-stablecoin `price_oracles/CryptoWithStablePriceAndChainlink.vy`, `controller.vy` |
@@ -53,7 +77,7 @@ Observed variants of the debt side:
 
 Used by Synthetix V2, Metronome Synth, Mirror (with UST as numeraire), Youves (docs), and JPY DeFi (yen as the CR unit but reached through USD feeds).
 
-Each asset, collateral and synth alike, has a single feed against one quote currency, and cross values are derived by division (`amount x sourceRate / destinationRate` in Synthetix `_effectiveValueAndRates`; `collateral_price / asset_price` in Mirror; `(collateral/USD) / (JPY/USD)` in JPY DeFi). For n assets this needs n feeds, not n x (n-1) pairs. This is the closest match to an sXMR and sBTC CDP against ETH: `CR = (ETH amount x ETH/USD) / (sXMR amount x XMR/USD)`.
+Each asset, collateral and synth alike, has a single feed against one quote currency, and cross values are derived by division (`amount x sourceRate / destinationRate` in Synthetix `_effectiveValueAndRates`; `collateral_price / asset_price` in Mirror; `(collateral/USD) / (JPY/USD)` in JPY DeFi). For n assets this needs n feeds, not n x (n-1) pairs. This is the closest match to an sXMR and sBTC CDP against ETH: `CR = (ETH amount x ETH/USD) / (sXMR amount x XMR/USD)`. ETH/USD is used together with the synth's own USD price, and USD is only the common yardstick: dividing two USD feeds gives the same number as a direct ETH/XMR feed.
 
 In every case the protocol's own unit-of-account token is hardcoded at 1 rather than read from an oracle: sUSD rate 1.0 and "never stale" (Synthetix); base asset `Decimal::one()` with an infinite update time (Mirror); msUSD 1.0 on chain while its market price is $0.818 (Metronome). This means a depeg of the numeraire token itself never reaches the CR check. In Mirror that was UST, the collateral and quote asset of the whole system.
 
@@ -67,7 +91,7 @@ The debt is valued at a constant, so the only oracle read is collateral/USD. Mak
 
 Used by Reflexer RAI (and Maker's `par` slot structurally allows it).
 
-RAI's `updateCollateralPrice` is Maker's `poke` with `par` replaced by `redemptionPrice()`, which compounds `redemptionRate` per second. So the CR check is `ETH x ETH/USD >= RAI x redemptionPrice x CRatio`: the debt side uses no oracle. A market oracle for RAI (Uniswap RAI/ETH TWAP times ETH/USD) only feeds the PI rate controller, not the solvency check. For a floating stablecoin this splits the oracle into two roles with different failure costs: a collateral feed that drives liquidations, and a market feed that steers the rate (inference from the code layout).
+RAI's `updateCollateralPrice` is Maker's `poke` with `par` replaced by `redemptionPrice()`, which compounds `redemptionRate` per second. So the CR check is `ETH x ETH/USD >= RAI x redemptionPrice x CRatio`: the debt side uses no oracle. A market oracle for RAI (Uniswap RAI/ETH TWAP times ETH/USD) only feeds the PI rate controller, not the solvency check. For a floating synth stablecoin this splits the oracle into two roles with different failure costs: a collateral feed that drives liquidations, and a market feed that steers the rate (inference from the code layout).
 
 ### 3.4 Direct cross pair
 
@@ -93,19 +117,48 @@ Liquity V2 and JPY DeFi both build LST/USD as `underlying/USD x exchange rate` a
 
 ## 4. Requirements this places on an oracle
 
-Derived from the evidence above; items marked (inference) are not stated by any source.
+Derived from the evidence above; items marked (inference) are not stated by any source. Numbering: the Notion page lists ten requirements. Its items 1 to 6 are items 1 to 6 here; its 7 is item 8 here (fallback), its 8 is item 9 (shared legs), its 9 is item 10 (venue coverage) and its 10 is item 11 (floating synth stablecoin). Composite feeds (item 7 here) appear on the Notion page only in its "Two things stand out" list.
 
-1. **One feed per asset in a common quote currency.** USD-only feeds are sufficient: every multi-asset protocol checked prices each asset against one numeraire and divides. For sXMR and sBTC against ETH: XMR/USD, BTC/USD, ETH/USD. A direct ETH/XMR feed is not required.
-2. **The CR depends on the cross rate, so the error budget is per pair** (inference). If ETH/USD and XMR/USD each carry an error or lag, the CR error is roughly the difference of the two relative errors. Deviation thresholds and heartbeats should be set for the cross volatility (ETH vs XMR), not each USD leg alone.
-3. **Per-feed freshness limits, checked independently.** Observed limits: Mirror 60 s; JPY DeFi ETH/USD 2 h for redemption; Liquity V1 4 h; Liquity V2 deploy script 24 h (48 h for rETH/ETH); Alchemix stETH/ETH 24 h; Synthetix 25 h (chain); JPY DeFi JPY/USD 30 h, 72 h plus 24 h grace. No protocol checked aligns timestamps across the two legs explicitly; Mirror comes closest by requiring both legs within the same 60 s window. For a two-feed CR, both legs should be checked against the same window (inference).
+1. **One feed per asset in a common quote currency.** USD-only feeds are sufficient: every multi-asset protocol checked prices each asset against one numeraire and divides. For sXMR and sBTC against ETH: XMR/USD, BTC/USD, ETH/USD, plus one for every other collateral that is listed. A direct ETH/XMR feed is not required. A collateral without a feed in that unit cannot be listed, whatever the Listing role decides.
+2. **The CR depends on the cross rate, so the error budget is per pair** (inference). If ETH/USD and XMR/USD each carry an error or lag, the CR error is roughly the difference of the two relative errors. Deviation thresholds and heartbeats (the longest a feed goes without updating) should be set for the cross volatility (ETH vs XMR), not each USD leg alone. No surveyed protocol sets thresholds per cross rate.
+3. **Per-feed freshness limits, checked independently.** Observed limits range from 60 seconds (Mirror) to 72 hours (JPY DeFi): Mirror 60 s; JPY DeFi ETH/USD 2 h for redemption; Liquity V1 4 h; Liquity V2 deploy script 24 h (48 h for rETH/ETH); Alchemix stETH/ETH 24 h; Synthetix 25 h (chain); JPY DeFi JPY/USD 30 h, 72 h plus 24 h grace. No protocol checked aligns timestamps across the two legs explicitly; Mirror comes closest by requiring both legs within the same 60 s window, so only Mirror in effect requires both legs to be fresh at the same time (inference). For a two-feed CR, both legs should be checked against the same window (inference).
 4. **Validity must encode age, not just a flag.** RAI's ETH-A OSM returned `hasValidValue = true` with a price of 2,637.75 last updated 2025-06-09, while its source read 1,795.73 on 2026-11-16 (chain). A boolean validity bit without an age check let a 17-month-old price stand. crvUSD's Chainlink bound likewise reads `answer` without checking `updatedAt`.
 5. **Deviation guards.** Liquity V1 treats a jump over 50% as broken and requires 5% agreement with Tellor to recover; Liquity V2 and JPY DeFi use 1% and 2% bands between market and canonical LST prices; crvUSD clamps the pool EMA to a Chainlink band; Alchemix caps stETH/ETH at 1.0.
-6. **A delayed or smoothed price for liquidations.** Maker and RAI read prices through an OSM with a 1 h delay; crvUSD uses EMAs. Metronome's $15.7M shortfall came from oracle latency at an oracle-priced swap, not at liquidation ([[projects/metronome-synth]]). Inference: a delay suits the CR check, but any mint or swap path priced at a lagging oracle is an arbitrage source.
+6. **A delayed or smoothed price for liquidations.** Maker and RAI read prices through an OSM with a 1 h delay; crvUSD uses EMAs. Metronome's $15.7M shortfall came from oracle latency at an oracle-priced swap, not at liquidation ([[projects/metronome-synth]]). Inference: a delay suits the CR check, but any mint or swap path priced at a lagging oracle is an arbitrage source: that is Metronome's $15.7M, which came from its swap module minting synths at a lagging oracle price, not from repays.
 7. **Composite feeds for wrapped collateral.** If ETH collateral arrives as an LST, the oracle needs the exchange rate (read from the LST contract) and ideally a market LST/ETH or LST/USD feed for min and max selection.
-8. **A defined fallback.** Observed: secondary oracle (Liquity V1 Tellor); `lastGoodPrice` plus branch shutdown (Liquity V2); pause with governance resume (JPY DeFi); halt all position operations (Mirror). A new chain with one oracle provider gets only the last two (inference).
-9. **Shared legs are a common-mode failure.** JPY DeFi's docs warn that JPY/USD is shared by all branches; in an sXMR and sBTC CDP against ETH, ETH/USD is shared by both synths (inference).
-10. **Market hours and venue coverage.** JPY DeFi documents that over weekends the JPY/USD timestamp advances while the price is flat, so freshness checks pass on a non-trading price. Inference: an XMR/USD feed needs the same scrutiny of how the publisher handles thin or delisted venues; not checked here.
-11. **No oracle on the debt side for a floating stablecoin's CR.** In the RAI design the redemption price is internal; the market price oracle (RAI/ETH TWAP times ETH/USD) is needed only for the rate controller. A floating stablecoin minted against XMR or ETH would therefore need the collateral/USD feed for solvency and a separate market feed for the controller.
+8. **A defined fallback.** Observed: secondary oracle (Liquity V1 Tellor); `lastGoodPrice` plus branch shutdown (Liquity V2); pause with governance resume (JPY DeFi); halt all position operations (Mirror). Risk to evaluate: with a single oracle provider on LEZ, everything above except a second provider remains available (inference). An earlier version of this item said a single-provider chain gets only the last two; the Notion page corrects that, because Liquity V2's last good price plus branch shutdown and JPY DeFi's governed pause need no second provider.
+9. **Shared legs are a common-mode failure.** Risk to evaluate: JPY DeFi's docs warn that JPY/USD is shared by all branches; in an sXMR and sBTC CDP against ETH, ETH/USD is shared by both synths, so an ETH/USD outage hits sXMR and sBTC at once (inference).
+10. **Market hours and venue coverage.** Risk to evaluate: JPY DeFi documents that over weekends the JPY/USD timestamp advances while the price is flat, so freshness checks pass on a non-trading price. Inference: XMR trades on thin and delisted venues, so an XMR/USD feed needs the same scrutiny of how the publisher handles them; not checked here. The page's follow-up is to check this with RedStone ([[rfp/appendix/cdp-oracle]]), where it is also noted that RedStone's own docs list no XMR/USD feed in a web search and only RFP-020 asserts one.
+11. **No oracle on the debt side for a floating synth stablecoin's CR.** In the RAI design the redemption price is internal; the market price oracle (RAI/ETH TWAP times ETH/USD) is needed only for the rate controller. A floating synth stablecoin minted against XMR or ETH would therefore need the collateral/USD feed for solvency and a separate market feed for the controller: two feeds with different jobs (inference from RAI's design).
+
+### 4.1 Collateral with no outside market: a Logos token or a Logos collateral stablecoin
+
+The rule above applies to these too: each needs a price in the common unit before it can back sXMR or sBTC. This is harder than for ETH. The three points below are on the Notion page; the evidence behind each is in the vault.
+
+- **Risk to evaluate: where does the price come from?** If the only market is on LEZ itself, the feed reads a liquidity pool that can be pushed with a large trade. The pool needs depth and a time-weighted average price (TWAP), as crvUSD does with moving averages of its pools and RAI with its Uniswap TWAP (section 2, rows crvUSD and RAI rate setter). Whether RedStone or any provider would publish such a price is unknown ([[rfp/appendix/cdp-oracle]]).
+- **Risk to evaluate: endogenous collateral.** Collateral from the same ecosystem tends to fall at the same time as demand for the synth. Mirror (UST and LUNA), Synthetix (SNX) and Kujira all failed that way ([[patterns/cdp-synthetics-landscape]] section 3.1; [[projects/mirror-protocol]], [[projects/synthetix-v2]]).
+- **Risk to evaluate: a Logos collateral stablecoin valued at par is the same shortcut** that every oracle-priced protocol takes for its own base token. If it depegs, the ratio check never sees it: Metronome still counts msUSD at 1.0 while it trades at $0.818 (section 3.1). The alternatives are a market feed for it, or, for the reflexive stablecoin (RFP-013), its internal redemption price (still open, section 4.2).
+
+The feed list and its thresholds are settings of the Oracle role, possibly with hard bounds in code ([[rfp/appendix/cdp-admin-switch]]). Which collateral to accept is the Listing role.
+
+### 4.2 Open decisions (Part 2 questions)
+
+1. **Open decision:** if the reflexive stablecoin (RFP-013) is listed as collateral for sXMR and sBTC, is it valued at its internal redemption price or at a market price? A market price needs a feed for it on LEZ. Valuing collateral at a redemption price is not seen in any surveyed protocol; RAI uses it only for its own debt (section 3.3).
+2. **Open decision:** which of the thresholds above (freshness, deviation, fallback) are hard bounds in code, and which are Oracle role settings?
+
+### 4.3 Precedent check (what is backed elsewhere)
+
+Source: a precedent audit run in the Notion session on 2026-11-17 by a research agent that read the vault notes, Aave V3, Morpho Blue and Vault V2, Alchemix, Lido, Balancer, OpenZeppelin, Indigo, Monolith and RedStone docs. It did not check the LEZ repository or the RFP texts. Agent-reported; not re-verified in this pass except where marked.
+
+| Claim on the page | Status | Basis |
+|---|---|---|
+| Error budget per cross pair (item 2) | Novel; labelled inference | No surveyed protocol sets deviation thresholds or heartbeats per cross rate |
+| Both oracle legs inside one freshness window (item 3) | Partly seen: Mirror only | Mirror requires both legs within 60 s ([[projects/mirror-protocol]]); no other protocol checked does |
+| Valuing collateral at the reflexive stablecoin's redemption price (question 1) | Novel | RAI uses its redemption price only for its own debt (section 3.3) |
+| Fallback with a single provider (item 8) | Backed, corrected on the page | Liquity V2 last good price plus branch shutdown, JPY DeFi governed pause and Mirror full halt need no second provider; a second provider (Liquity V1 with Tellor) does |
+| Freshness range 60 s to 72 hours | Backed | Mirror 60 s; JPY DeFi 72 h (plus 24 h grace); Liquity V2 uses 48 h for rETH/ETH (section 4, item 3) |
+| Metronome's $15.7M | Backed, corrected on the page | The swap module minted synths at a lagging oracle price; it did not come from repays ([[projects/metronome-synth]], Limitations) |
+| RedStone XMR/USD feed exists | Unclear | A web search found no XMR/USD feed in RedStone's docs; only RFP-020 asserts it ([[rfp/appendix/cdp-oracle]]) |
 
 ## 5. Surprises
 
@@ -125,6 +178,7 @@ Derived from the evidence above; items marked (inference) are not stated by any 
 - Synthetix V2 GitHub repository: `github.com/Synthetixio/synthetix` returned not found and `synthetix-v2` returned 403, so the npm package was read instead.
 - crvUSD oracles other than `CryptoWithStablePriceAndChainlink.vy`, and which oracle each live market uses.
 - How XMR/USD is produced by any oracle provider (venues, delisting effects).
+- Whether RedStone, or any other provider, publishes XMR/USD at all (a web search of RedStone's docs found none; RFP-020 asserts it) and whether a provider would publish a price for a Logos token that has no outside market.
 
 ## Sources
 

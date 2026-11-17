@@ -39,6 +39,7 @@ Ranked by current relevance and size as of 2026-11-16 where refreshed. Prior May
 The twenty selected protocols cover the design space:
 
 - **Debt-pool and CDP synthetics:** [[projects/synthetix-v2]], [[projects/synthetix-v3]], [[projects/sky-maker]], [[projects/liquity]], [[projects/alchemix]], [[projects/metronome-synth]], [[projects/youves]], [[projects/mirror-protocol]] (historical), [[projects/frankencoin]], [[projects/crvusd]]. Comparison in [[patterns/cdp-synthetics-landscape]].
+- **Also with their own notes since 2026-11-17 (not ranked in the table above and not counted in the twenty; both sit in the landscape survey):** [[projects/indigo]] (Cardano, a Stability Pool per synth) and [[projects/monolith]] (a token per collateral), added because Part 4 of the Notion page "CDP-Backed Synthetics" cites them as evidence.
 - **Collateral-split and delta-neutral synthetic dollars:** [[projects/hylo]], [[projects/ethena-usde]]
 - **Liquidity-pool perps (LP as counterparty):** [[projects/gmx-v2]], [[projects/jupiter-perps]]
 - **CLOB / orderbook:** [[projects/hyperliquid]], [[projects/dydx-v4]], [[projects/lighter]], [[projects/variational]]
@@ -50,7 +51,7 @@ This covers the full spectrum of trust models (threshold multisigs, validator se
 
 ## Research status
 
-First pass done 2026-05; Ethereum, Solana and CDP update done 2026-11-16 (agent-assisted, with spot checks against DefiLlama's API). A formal fact-check pass (see `rfp/agents/fact-checker.md`) has not been run on the November changes.
+First pass done 2026-05; Ethereum, Solana and CDP update done 2026-11-16 (agent-assisted, with spot checks against DefiLlama's API). A formal fact-check pass (see `rfp/agents/fact-checker.md`) has not been run on the November changes, including the 2026-11-17 changes that align the CDP notes with the Notion page "CDP-Backed Synthetics" (new notes there carry a "Conflicts and gaps" section and mark agent-reported items that were not re-verified).
 
 - [x] [[projects/synthetix-v3]] (refreshed 2026-11)
 - [x] [[projects/gmx-v2]] (refreshed 2026-11)
@@ -61,6 +62,7 @@ First pass done 2026-05; Ethereum, Solana and CDP update done 2026-11-16 (agent-
 - [x] [[projects/ostium]] (refreshed 2026-11)
 - [ ] [[projects/sbtc-stacks]] (May 2026 data; not refreshed)
 - [x] New 2026-11: [[projects/lighter]], [[projects/variational]], [[projects/ethena-usde]], [[projects/synthetix-v2]], [[projects/liquity]], [[projects/sky-maker]], [[projects/alchemix]], [[projects/metronome-synth]], [[projects/youves]], [[projects/mirror-protocol]], [[projects/hylo]]
+- [x] New 2026-11-17 (Notion alignment, agent-assisted): [[projects/indigo]], [[projects/monolith]]; extended: [[projects/liquity]] (Stability Pool and redistribution, WETH branch), [[projects/hylo]] (leveraged-token example), [[projects/alchemix]] (one Alchemist per alAsset)
 
 Related: [[projects/monero-zcash-synthetics-community-history]] (ecosystem history for the sXMR RFP).
 
@@ -74,5 +76,17 @@ Related: [[projects/monero-zcash-synthetics-community-history]] (ecosystem histo
 - [[patterns/synthetic-collateral-models]]
 - [[patterns/cdp-synthetics-landscape]]
 - [[patterns/cdp-vs-morpho-trust]]
-- [[patterns/collateral-debt-units]]
-- [[rfp/appendix/cdp-isolation]]
+- [[patterns/collateral-debt-units]] (Notion Part 2)
+- [[patterns/cdp-peg-mechanisms]] (Notion Part 3)
+
+## CDP on LEZ: notes that back the Notion page "CDP-Backed Synthetics"
+
+Part map and terms: [[rfp/appendix/cdp-notion-map]].
+
+- [[rfp/appendix/cdp-admin-switch]] (Part 1: the rules and the admin switch proposal)
+- [[patterns/collateral-debt-units]] (Part 2: units and oracle requirements)
+- [[patterns/cdp-peg-mechanisms]] (Part 3: peg mechanisms)
+- [[rfp/appendix/cdp-isolation]] (Part 4: how a deployment shares risk; filename kept from the earlier "isolation" title)
+- [[rfp/appendix/cdp-risk-privacy-market]] (Parts 5, 7 and 8: questions with evidence)
+- [[rfp/appendix/cdp-oracle]] (Part 6: oracle interface and what is out of scope)
+- [[patterns/cdp-vs-morpho-trust]] (background for Part 4)
